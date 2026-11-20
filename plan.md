@@ -205,6 +205,22 @@ C:\Users\edier\Documents\EDIER\agent-core\
 
   Sigue ESTRICTAMENTE este protocolo en orden:
 
+  0. DETECCIÓN Y REORGANIZACIÓN QUIRÚRGICA DE ÁRBOL EXPUESTO (Cero Basura en Raíz):
+     - Verifica si las carpetas del arnés (`agents/`, `workflows/`, `skills/`, `templates/`, `mcp/`) se encuentran expuestas directamente en la raíz del proyecto (típico cuando este repositorio fue clonado directamente para iniciar el proyecto):
+       * SI ESTÁN EXPUESTAS EN LA RAÍZ:
+         1. Crea el directorio canónico `.agent/` si no existe.
+         2. Mueve quirúrgicamente las carpetas del arnés a `.agent/`:
+            - `agents/` -> `.agent/agents/`
+            - `workflows/` -> `.agent/workflows/`
+            - `skills/` -> `.agent/skills/`
+            - `templates/` -> `.agent/templates/`
+            - `mcp/` -> `.agent/mcp/`
+         3. Reubica la documentación del arnés para no contaminar la raíz:
+            - Si existe `README.md` y pertenece al arnés (contiene `# agent-core`), muévelo a `.agent/README.md` y genera en la raíz un `README.md` limpio e inicial para el nuevo proyecto.
+            - Si existe `plan.md` en la raíz (plan de construcción de agent-core), muévelo a `.agent/docs/history/agent-core-plan.md` para evitar colisiones con los planes del proyecto (`specs/NNN-.../plan.md`).
+       * SI YA ESTÁN EN `.agent/`:
+         - No muevas nada; la estructura ya está canónicamente aislada.
+
   1. EVALÚA EL ESTADO DEL REPOSITORIO (Día 0 vs Día N):
      - Revisa si existen en la raíz o en docs/ los siguientes archivos: `AGENTS.md`, `MEMORY.md`, `docs/constitution.md`.
      - CASO A: REPOSITORIO NUEVO (DÍA 0 - No existen `AGENTS.md` ni `constitution.md`):
@@ -296,6 +312,22 @@ C:\Users\edier\Documents\EDIER\agent-core\
   - `.agent/skills/` (batería de skills metodológicas).
   - `.agent/agents/` (los 4 subagentes en formato portable).
   - `.agent/workflows/` (workflows ejecutables / custom commands).
+  - `.agent/templates/` (plantillas de configuración, agentes y adaptadores).
+  - `.agent/mcp/` (catálogo y schemas de servidores MCP recomendados).
+  - `.agent/README.md` (documentación offline de referencia del arnés).
+- **Protocolo de Reorganización Quirúrgica y Cero Basura en Raíz (Detección de Árbol Expuesto)**:
+  - Cuando un desarrollador clona directamente `agent-core` para iniciar un nuevo proyecto (o bifurca el repositorio base), los directorios del arnés (`agents/`, `workflows/`, `skills/`, `templates/`, `mcp/`) se encuentran inicialmente expuestos en la raíz.
+  - En lugar de exigir borrados manuales al usuario o generar basura en el repositorio destino, el sistema aplica reorganización automática y quirúrgica al primer contacto (`/init`, `/adopt` o prompt universal):
+    1. Si detecta las carpetas del arnés en la raíz, crea `.agent/` si no existe y traslada de inmediato:
+       - `agents/` -> `.agent/agents/`
+       - `workflows/` -> `.agent/workflows/`
+       - `skills/` -> `.agent/skills/`
+       - `templates/` -> `.agent/templates/`
+       - `mcp/` -> `.agent/mcp/`
+    2. Reubica la documentación del arnés fuera de la raíz:
+       - Si `README.md` corresponde a `agent-core` (contiene `# agent-core`), lo mueve a `.agent/README.md` (preservando el manual de consulta offline) y crea un nuevo `README.md` limpio para el proyecto del usuario.
+       - Si existe `plan.md` en la raíz (plan de construcción de agent-core), lo mueve a `.agent/docs/history/agent-core-plan.md` para evitar colisiones con los planes del proyecto (`specs/NNN-.../plan.md`).
+    3. Garantiza que la raíz quede 100% limpia y reservada exclusivamente para los artefactos de software del usuario (`src/`, `AGENTS.md`, `MEMORY.md`, `docs/constitution.md`, `.env.example`, etc.).
 - **Auditoría y Soporte Greenfield en `init.md` (Git y Entorno)**:
   - **Comprobación de Repositorio Git**: Si `init.md` detecta que el directorio no cuenta con control de versiones (`.git` no existe), solicita confirmación al usuario para inicializarlo de inmediato (`git init && git checkout -b main`) y generar el commit inicial, garantizando que las compuertas de commit y baseline de TDD funcionen correctamente.
   - **Generación de `.env.example`**: Si el proyecto requiere variables de entorno y carece de `.env.example`, `init.md` genera automáticamente una plantilla documentada con valores de ejemplo (sin secretos reales).

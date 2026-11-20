@@ -64,19 +64,28 @@ agent-core/
 
 `agent-core` opera bajo la política **Local-First (Offline)**: prioriza el trabajo sin conexión utilizando una copia local del núcleo antes de requerir acceso a internet.
 
-### Opción A: Inicialización desde Copia Local (Recomendada)
-Si tienes el repositorio clonado localmente (ej. en `~/.agent-core` o `C:/Users/.../agent-core`):
+### Principio Innegociable: Contenedor Limpio y Cero Basura en Raíz
+Toda la maquinaria, agentes, workflows, plantillas y skills de `agent-core` residen **exclusivamente dentro del directorio `.agent/`** en el proyecto destino. La raíz del proyecto (`root`) queda 100% limpia y reservada para el software del usuario (`src/`, `docs/`, `AGENTS.md`, `MEMORY.md`, `.env.example`, etc.).
 
+### Escenario A: Clonado Directo como Base de Proyecto Nuevo (Día 0)
+Si clonaste directamente este repositorio para usarlo como punto de partida de tu aplicación:
+1. Pega el **Prompt Universal** (Sección 3) en el chat de tu agente.
+2. El agente detectará automáticamente que el árbol del arnés está en la raíz y ejecutará la **reorganización quirúrgica**:
+   - Moverá `agents/`, `workflows/`, `skills/`, `templates/` y `mcp/` dentro de `.agent/`.
+   - Moverá el `README.md` del arnés a `.agent/README.md` y creará un `README.md` nuevo y limpio para tu proyecto.
+   - Moverá el plan de construcción a `.agent/docs/history/agent-core-plan.md`.
+3. Procederá a la entrevista técnica inicial para configurar tu stack.
+
+### Escenario B: Inyección en Proyecto Existente (Día N)
+Si deseas equipar un proyecto ya existente con `agent-core`:
 ```bash
-# Dentro de tu repositorio destino:
+# Copia la carpeta del arnés dentro de tu proyecto en .agent/:
+mkdir -p .agent
+cp -r <ruta-local-a-agent-core>/* .agent/
+# O añade la skill router inicial:
 npx skills add <ruta-local-a-agent-core>/skills/router/using-agent-skills
 # O invocar el workflow de inicialización apuntando a la fuente local:
 /init --source C:/Users/edier/Documents/EDIER/agent-core
-```
-
-### Opción B: Inicialización desde GitHub (Nuevo Equipo)
-```bash
-git clone https://github.com/<tu-usuario>/agent-core.git ~/.agent-core
 ```
 
 ---
@@ -90,6 +99,22 @@ Eres el AGENTE PRINCIPAL operando en este repositorio.
 Tu objetivo es activar el flujo de ingeniería de software SDD + TDD de agent-core.
 
 Sigue ESTRICTAMENTE este protocolo en orden:
+
+0. DETECCIÓN Y REORGANIZACIÓN QUIRÚRGICA DE ÁRBOL EXPUESTO (Cero Basura en Raíz):
+   - Verifica si las carpetas del arnés (`agents/`, `workflows/`, `skills/`, `templates/`, `mcp/`) se encuentran expuestas directamente en la raíz del proyecto (típico cuando este repositorio fue clonado directamente para iniciar el proyecto):
+     * SI ESTÁN EXPUESTAS EN LA RAÍZ:
+       1. Crea el directorio canónico `.agent/` si no existe.
+       2. Mueve quirúrgicamente las carpetas del arnés a `.agent/`:
+          - `agents/` -> `.agent/agents/`
+          - `workflows/` -> `.agent/workflows/`
+          - `skills/` -> `.agent/skills/`
+          - `templates/` -> `.agent/templates/`
+          - `mcp/` -> `.agent/mcp/`
+       3. Reubica la documentación del arnés para no contaminar la raíz:
+          - Si existe `README.md` y pertenece al arnés (contiene `# agent-core`), muévelo a `.agent/README.md` y genera en la raíz un `README.md` limpio e inicial para el nuevo proyecto.
+          - Si existe `plan.md` en la raíz (plan de construcción de agent-core), muévelo a `.agent/docs/history/agent-core-plan.md` para evitar colisiones con los planes del proyecto (`specs/NNN-.../plan.md`).
+     * SI YA ESTÁN EN `.agent/`:
+       - No muevas nada; la estructura ya está canónicamente aislada.
 
 1. EVALÚA EL ESTADO DEL REPOSITORIO (Día 0 vs Día N):
    - Revisa si existen en la raíz o en docs/ los siguientes archivos: `AGENTS.md`, `MEMORY.md`, `docs/constitution.md`.
