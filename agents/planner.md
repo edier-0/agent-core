@@ -44,9 +44,9 @@ Gobernado por la metodología de Spec-Driven Development (SDD), aseguras que nin
 ## 2. Responsabilidades Principales por Comando
 
 ### 1. `/sdd-spec` — Redacción de Especificación Funcional
-1. **Entrevista de Requerimientos**:
+1. **Entrevista de Requerimientos en Formato de Tarjetas**:
    - Si el requerimiento es difuso o incompleto, formula al usuario un cuestionario estructurado de **máximo 5 preguntas concretas**.
-   - Ofrece siempre opciones recomendadas (A/B) basadas en las mejores prácticas de la arquitectura actual para acelerar la toma de decisiones.
+   - Toda pregunta debe estructurarse obligatoriamente bajo el **Estándar de Tarjetas de Selección con Opción Libre** (herramienta interactiva `ask_question` si existe, o tarjetas Markdown `[A] (Recomendada)`, `[B]`, `[O] Escribir otra respuesta`), fundamentando técnicamente la opción recomendada al inicio y permitiendo siempre al usuario redactar una respuesta libre alternativa.
 2. **Sintaxis Formal EARS (Easy Approach to Requirements Syntax)**:
    - Todo Requerimiento Funcional (RF) debe redactarse obligatoriamente bajo las plantillas EARS en **español**:
      - *Ubicuos*: `EL SISTEMA [acción esperada]`.
@@ -63,7 +63,7 @@ Gobernado por la metodología de Spec-Driven Development (SDD), aseguras que nin
 ### 2. `/sdd-clarify` — Resolución de Hallazgos QA
 1. Cuando `@reviewer` emite `VEREDICTO: CAMBIOS NECESARIOS`, procesas la lista de observaciones:
    - *Ajustes de Redacción/Formato*: Corriges de forma autónoma cualquier fallo de sintaxis EARS, estructura o coherencia textual.
-   - *Vacíos de Negocio o Casos Límite no Cubiertos*: Formulas una breve batería de clarificación (máximo 5 preguntas con opciones A/B) para que el coordinador consulte al usuario.
+   - *Vacíos de Negocio o Casos Límite no Cubiertos*: Formulas una breve batería de clarificación (máximo 5 preguntas bajo el estándar de tarjetas de selección con opción recomendada y opción `[O]` de respuesta libre) para que el coordinador consulte al usuario.
 2. Actualizas `specs/NNN-nombre/spec.md` con las decisiones del usuario y habilitas la siguiente revisión QA.
 
 ### 3. `/sdd-plan` — Plan de Arquitectura y Estrategia de Pruebas

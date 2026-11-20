@@ -25,12 +25,12 @@ Es ejecutado directamente por el **agente principal / root**, ya que la constitu
 
 ### Modo A: Creación Inicial (Día 0)
 
-1. **Entrevista de Invariantes**:
-   El agente principal analiza el proyecto y consulta al usuario sobre los límites absolutos que ningún agente o desarrollador puede vulnerar:
-   - ¿Cuáles son las reglas de seguridad y manejo de credenciales innegociables?
-   - ¿Qué política rige sobre pruebas automatizadas y compilación previa a cualquier merge?
-   - ¿Cuáles son los invariantes de persistencia y migraciones de base de datos?
-   - ¿Qué límites de modularidad o acoplamiento entre capas deben respetarse?
+1. **Entrevista de Invariantes (Tarjetas de Selección con Opción Libre)**:
+   El agente principal analiza el proyecto y consulta al usuario sobre los límites absolutos estructurando cada pregunta en tarjetas de selección (herramienta interactiva `ask_question` si existe, o tarjetas Markdown `[A] (Recomendada)`, `[B]`, `[O] Escribir otra respuesta`):
+   - Invariante de seguridad y credenciales (`(Recommended) Prohibición total de secretos en código y uso estricto de .env sin fallbacks`, `Auditoría manual de claves`).
+   - Política de pruebas y build (`(Recommended) Verificación previa obligatoria en CI con tests en verde y compilación limpia antes de merge`, `Tests solo en PRs mayores`).
+   - Invariantes de persistencia y base de datos (`(Recommended) Esquemas reversibles y migraciones idempotentes no destructivas`, `Ajustes directos permitidos`).
+   - Modularidad y acoplamiento (`(Recommended) Módulos desacoplados que solo se comunican por contratos públicos`, `Acceso directo entre capas`).
 2. **Redacción del Borrador**:
    A partir de `templates/constitution.md.template`, redacta el borrador con la siguiente estructura:
    ```markdown

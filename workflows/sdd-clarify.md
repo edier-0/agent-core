@@ -53,10 +53,13 @@ VEREDICTO: CAMBIOS NECESARIOS
 #### Protocolo de Resolución (Máximo 2 Rondas):
 1. **Separación de Responsabilidades**:
    - **Correcciones Textuales / Formato EARS**: `@planner` corrige directamente las faltas de redacción o formato en `spec.md`.
-   - **Brechas de Negocio / Casos Límite no Definidos**: El Coordinador presenta una entrevista directa al usuario con un máximo de 5 preguntas concretas, ofreciendo opciones recomendadas A/B para acelerar la toma de decisiones:
-     > *"Para cerrar el caso límite detectado en la línea X, ¿cuál debe ser el comportamiento esperado?:*  
-     > *(A) Opción recomendada: [explicación técnica]*  
-     > *(B) Opción alternativa: [explicación]"*
+   - **Brechas de Negocio / Casos Límite no Definidos**: El Coordinador presenta una encuesta al usuario estructurada bajo el **Estándar de Tarjetas de Selección con Opción Libre** (máximo 5 preguntas concretas):
+     - Mediante la herramienta interactiva `ask_question` si está soportada, con opciones sin numerar y la recomendada de primero con `(Recommended)`.
+     - O mediante tarjetas visuales en Markdown:
+       > **Para cerrar el caso límite detectado en la línea X, ¿cuál debe ser el comportamiento esperado?:**  
+       > - **[A] (Recomendada)**: [Explicación técnica fundamentada]  
+       > - **[B]**: [Opción alternativa]  
+       > - **[O] Escribir otra respuesta**: (Escribe tu alternativa personalizada si aplica).
 2. **Actualización de la Spec**:
    - Con las respuestas del usuario, `@planner` actualiza `specs/NNN-nombre/spec.md`.
 3. **Segunda Pasada de QA**:

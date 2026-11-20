@@ -31,6 +31,7 @@ DEV_SERVER_URL="{{DEV_SERVER_URL}}" # ej. http://localhost:5173 (vacío si es he
 ## Convenciones y Reglas de Dominio
 - **Idioma**: Comentarios de código, pruebas, mensajes de commit e interfaces exclusivamente en **español**.
 - **Rutas**: Utilizar siempre barras diagonales directas (`/`) en toda referencia a archivos.
+- **Estándar de Encuestas al Usuario**: Todas las preguntas de clarificación, entrevistas o decisiones dirigidas al usuario deben formularse obligatoriamente como tarjetas de selección (herramienta interactiva nativa o tarjetas visuales con opción recomendada de primero y opción abierta para escribir otra respuesta libre).
 - **Reglas específicas**: {{DOMAIN_RULES_OR_GOTCHAS}}
 
 ## Forma de Trabajar (SDD + TDD Innegociable)

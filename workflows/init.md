@@ -78,22 +78,27 @@ Si se ejecuta en un proyecto destino independiente:
 
 ---
 
-### Fase 4: Auditoría o Entrevista Técnica
+### Fase 4: Auditoría o Entrevista Técnica (Tarjetas de Selección con Opción Libre)
+
+**Estándar Obligatorio de Formulación**: Todas las preguntas de esta fase deben presentarse obligatoriamente bajo el formato de **tarjetas de selección con opción libre**:
+- Si la plataforma dispone de herramienta interactiva nativa (ej. `ask_question`), invocarla enviando las opciones sin numerar con `(Recommended)` en la sugerencia preferente según el contexto analizado (la UI despliega tarjetas de clic y la opción automática para escribir otra respuesta).
+- Si opera en texto plano / Markdown, estructurar cada pregunta como tarjetas visuales de selección con opciones `[A] (Recomendada)`, `[B]` y la opción explícita `[O] Escribir otra respuesta`.
+- Queda prohibido formular preguntas abiertas en texto plano sin opciones preconfiguradas.
 
 #### Si es Proyecto Existente:
 1. Inspecciona los archivos clave del repositorio (árbol de directorios, manifiestos de dependencias, scripts de test, docker-compose, linters).
-2. Formula un máximo de 3 a 5 preguntas concretas sobre lo que **no se puede deducir del código**:
-   - ¿Cuáles son las reglas de dominio o trampas críticas que un agente suele romper aquí?
+2. Formula un máximo de 3 a 5 preguntas concretas sobre lo que **no se puede deducir del código** estructuradas en tarjetas:
+   - ¿Qué flujo de Git prefieres utilizar? (`(Recommended) branch_pr con ramas dedicadas y PRs`, `trunk con desarrollo directo en main`, u otra respuesta).
+   - ¿Cuáles son las reglas de dominio o trampas críticas que ningún agente debe romper?
    - ¿Qué acciones o módulos están estrictamente prohibidos tocar o cambiar (guardrails)?
    - ¿Qué comando exacto de test consideras indispensable y cuál es tu servidor de desarrollo local (`DEV_SERVER_URL`)?
-   - ¿Qué flujo de Git utilizas (`branch_pr` con `develop`/`main`, o `trunk` directo en `main`)?
 
 #### Si es Proyecto Desde Cero (Greenfield):
-1. Entrevista al usuario brevemente:
-   - Objetivo del proyecto y arquitectura inicial (monolito modular, API REST, CLI, frontend SPA).
-   - Stack tecnológico (lenguaje, framework, base de datos).
-   - Runner de pruebas a configurar (ej. Vitest, Jest, Pytest, Cargo test).
-   - Modo de Git preferido (`branch_pr` por defecto, o `trunk`).
+1. Entrevista al usuario mediante tarjetas de selección:
+   - Tipo de arquitectura inicial (`(Recommended) Monolito modular desacoplado`, `API REST backend pura`, `Aplicación Frontend SPA`, `CLI / Herramienta de terminal`).
+   - Stack tecnológico principal (ofreciendo las opciones más robustas del ecosistema con recomendación fundamentada).
+   - Runner de pruebas determinista a configurar (ej. Vitest, Pytest, Jest, Cargo test).
+   - Modo de Git preferido (`(Recommended) branch_pr con PR`, `trunk directo`).
 
 ---
 

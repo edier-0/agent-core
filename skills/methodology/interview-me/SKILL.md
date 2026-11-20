@@ -36,20 +36,31 @@ HIPÓTESIS: Buscas alertar al usuario cuando una orden califique para un benefic
 CONFIANZA: ~40% — falta confirmar: si el canje se aplica automáticamente en la orden o si se redime como un cupón manual.
 ```
 
-### Paso 2: Hacer UNA Sola Pregunta a la Vez
-No abrumes al usuario con una lista extensa de preguntas numeradas. Realiza una sola pregunta concreta con tu mejor suposición adjunta para facilitar la respuesta rápida:
-
-```text
-¿El operador debe poder procesar pagos combinados (ej. efectivo y transferencia) en una sola transacción, o cada orden admite un único método de pago cerrado?
-(Mi suposición: Debería permitir pagos divididos porque en operaciones reales los clientes a menudo combinan canales).
-```
+### Paso 2: Hacer UNA Sola Pregunta en Formato de Tarjetas de Selección
+No abrumes al usuario con preguntas abiertas densas ni listas infinitas. Realiza una sola pregunta concreta a la vez estructurada como **tarjetas de selección**:
+- **En plataformas con herramienta nativa (ej. `ask_question`)**: Invoca la herramienta configurando las opciones sin numerar, con la opción recomendada al inicio con `(Recommended)`. La interfaz provee tarjetas interactivas y la opción automática para escribir otra respuesta (*"Other"*).
+- **En interfaces de chat / Markdown**: Formula la pregunta como tarjetas visuales con opciones etiquetadas y la opción explícita de respuesta libre:
+  ```markdown
+  > **¿El operador debe poder procesar pagos combinados (ej. efectivo y transferencia) en una sola orden?**
+  >
+  > - **[A] (Recomendada)**: Sí, permitir pagos divididos y registrar montos por cada método.
+  > - **[B]**: No, cada orden admite un único método de pago cerrado.
+  > - **[O] Escribir otra respuesta**: (Escribe tu alternativa personalizada si aplica).
+  ```
 
 ### Paso 3: Actualizar la Hipótesis
-Con la respuesta del usuario:
+Con la respuesta del usuario (ya sea seleccionando una opción o escribiendo su propio texto libre):
 - Ajusta el porcentaje de certidumbre.
-- Si la confianza sigue por debajo del 95%, formula la siguiente pregunta enfocada.
+- Si la confianza sigue por debajo del 95%, formula la siguiente pregunta enfocada en el mismo formato de tarjetas.
 
 ### Paso 4: Condición de Parada ($\ge 95\%$ de Confianza)
 Sabes que has terminado cuando puedes predecir con exactitud cómo respondería el usuario a los casos límite y decisiones de diseño. En ese momento:
 1. Presenta un resumen ejecutivo de entendimiento.
 2. Solicita confirmación para transicionar formalmente al workflow `/sdd-spec` e iniciar la redacción de `specs/NNN-nombre/spec.md`.
+
+---
+
+## 3. Estándar Innegociable de Encuestas y Preguntas
+- **Cero Preguntas Abiertas Difusas**: Nunca lances preguntas al aire sin opciones base concretas.
+- **Opción Recomendada Siempre Primero**: Fundamenta técnicamente la primera opción basada en la arquitectura y buenas prácticas.
+- **Salida Libre Obligatoria**: Ofrece siempre la posibilidad de escribir otra respuesta (*"Other"* / `[O]`) para que el usuario nunca quede atrapado si ninguna alternativa cubre su necesidad de negocio.

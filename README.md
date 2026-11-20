@@ -121,7 +121,7 @@ Sigue ESTRICTAMENTE este protocolo en orden:
    - CASO A: REPOSITORIO NUEVO (DÍA 0 - No existen `AGENTS.md` ni `constitution.md`):
      - Tu primera tarea es ejecutar el proceso de inicialización (Bootstrap).
      - Consulta la plantilla y guía en `.agent/workflows/init.md` (o `workflows/init.md` si estás dentro de agent-core).
-     - Realiza la entrevista técnica al usuario (lenguaje, framework, base de datos, comandos de test y dev).
+     - Realiza la entrevista técnica al usuario mediante tarjetas de selección interactiva (con opción recomendada al inicio y opción abierta para redactar otra respuesta libre).
      - Genera los archivos fundacionales del repositorio:
        * `AGENTS.md` (resumen conciso de stack, comandos y límites innegociables de ~30-40 líneas).
        * `docs/constitution.md` (máximo 6 principios rectores de arquitectura en ~10-15 líneas).
@@ -204,6 +204,7 @@ Sigue ESTRICTAMENTE este protocolo en orden:
 - **Gobernanza Git:** La rama base nunca recibe merges directos locales; toda integración se realiza mediante Pull Request validado por CI.
 - **Salvaguarda de Ramas:** Se debe pedir confirmación explícita al usuario **antes de abrir PR, antes de fusionar PR y antes de eliminar cualquier rama local o remota**.
 - **Normalización Universal de Rutas:** Toda referencia a archivos en documentación, scripts y llamadas a herramientas utiliza exclusivamente **barras diagonales directas (`/`)**.
+- **Estándar de Encuestas al Usuario (Tarjetas con Opción Libre):** Toda encuesta, entrevista técnica o clarificación de requerimientos dirigida al usuario debe formularse obligatoriamente como tarjetas de selección (mediante la herramienta interactiva del entorno o tarjetas visuales con opción recomendada primero y opción libre para escribir otra respuesta). Quedan prohibidas preguntas abiertas difusas o listados sin opciones base.
 - **Convención Lingüística:** Toda la documentación, prompts, workflows y mensajes de error operan exclusivamente en **español**.
 
 ---

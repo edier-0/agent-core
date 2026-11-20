@@ -97,6 +97,18 @@ Modifica exclusivamente los archivos requeridos para la tarea en curso. **Prohib
 ### 6. Verificar con Pruebas, Jamás Asumir
 Una tarea no está terminada hasta que la verificación automatizada aprueba. "Parece que funciona" no es evidencia; se requieren pruebas pasando en verde (`TEST_COMMAND`), compilación limpia (`TYPECHECK_COMMAND`) y empaquetado exitoso.
 
+### 7. Estándar de Consultas y Encuestas: Tarjetas de Selección con Opción Libre
+Toda encuesta, entrevista de requerimientos, clarificación de spec o pregunta técnica dirigida al usuario debe estructurarse obligatoriamente bajo el **formato de tarjetas de selección**:
+- **En entornos con herramienta interactiva nativa (ej. `ask_question`)**: Usar obligatoriamente la herramienta interactiva de preguntas. Proporcionar las opciones sin numerar, la recomendada al inicio prefijada con `(Recommended)`, permitiendo que la interfaz renderice tarjetas interactivas y la opción automática para escribir otra respuesta libre (*"Other"*).
+- **En entornos de chat / Markdown plano**: Formatear como **Tarjetas de Opciones Visuales**:
+  > **[Pregunta concreta en una sola línea]**
+  >
+  > - **[A] (Recomendada)**: [Opción preferente según arquitectura y mejores prácticas]
+  > - **[B]**: [Opción alternativa 1]
+  > - **[C]**: [Opción alternativa 2 (si aplica)]
+  > - **[O] Escribir otra respuesta**: [Permite al usuario redactar una alternativa libre personalizada]
+- **Prohibición**: Queda terminantemente prohibido formular preguntas abiertas difusas, párrafos densos o listados sin opciones predefinidas que fuercen al usuario a escribir respuestas largas desde cero.
+
 ---
 
 ## 3. Secuencia Típica del Ciclo de Vida de una Característica

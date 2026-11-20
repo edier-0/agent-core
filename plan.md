@@ -177,6 +177,11 @@ C:\Users\edier\Documents\EDIER\agent-core\
   - Los subagentes (`planner`, `implementer`, `reviewer`) **NO se comunican entre sí** ni comparten historial de conversación.
   - El **Coordinador actúa como mensajero y orquestador exclusivo**, inyectando en cada fase los objetivos, decisiones del usuario y resultados previos.
   - Cada subagente tiene **permiso de lectura directo en el espacio de trabajo** para consultar `constitution.md`, `AGENTS.md`, `MEMORY.md` y código fuente.
+- **Estándar Universal de Encuestas y Preguntas al Usuario (Tarjetas con Opción Libre)**:
+  - Para eliminar la fricción de preguntas abiertas o textos densos que sobrecargan al usuario, toda encuesta, entrevista técnica (`/init`), clarificación de spec (`/sdd-clarify`) o captura de requerimientos (`/sdd-spec`, `interview-me`) debe estructurarse como **tarjetas de selección**:
+    1. Si el entorno admite herramientas interactivas nativas (ej. `ask_question`), se invoca obligatoriamente proporcionando opciones sin numerar, la recomendación de primero con `(Recommended)` y aprovechando la opción nativa "Other" para respuesta libre.
+    2. Si el entorno opera exclusivamente en chat / Markdown plano, se renderizan tarjetas visuales `[A] (Recomendada)`, `[B]`, etc., y la opción obligatoria `[O] Escribir otra respuesta` para entrada libre.
+    3. Queda prohibido formular preguntas abiertas difusas o listados densos sin opciones predefinidas.
 
 ### B. Mapeo para los 4 Agentes Principales y Motor de Auto-Adopción
 - **Entornos Multiagente Nativos vs Monohilo (Diferenciación de Despacho)**:
@@ -226,7 +231,7 @@ C:\Users\edier\Documents\EDIER\agent-core\
      - CASO A: REPOSITORIO NUEVO (DÍA 0 - No existen `AGENTS.md` ni `constitution.md`):
        - Tu primera tarea es ejecutar el proceso de inicialización (Bootstrap).
        - Consulta la plantilla y guía en `.agent/workflows/init.md` (o `workflows/init.md` si estás dentro de agent-core).
-       - Realiza la entrevista técnica al usuario (lenguaje, framework, base de datos, comandos de test y dev).
+       - Realiza la entrevista técnica al usuario mediante tarjetas de selección interactiva (con opción recomendada al inicio y opción abierta para redactar otra respuesta libre).
        - Genera los archivos fundacionales del repositorio:
          * `AGENTS.md` (resumen conciso de stack, comandos y límites innegociables).
          * `docs/constitution.md` (máximo 6 principios rectores de arquitectura).

@@ -51,3 +51,19 @@ Todo requerimiento funcional en `spec.md` debe formularse en una de las 5 varian
 - **Una Sola Tarea a la Vez**: Ciclo TDD estricto (tests en rojo primero, código mínimo en verde, refactorización con linters).
 - **Verificación**: `TEST_COMMAND` en verde y commits convencionales por tarea (`<tipo>(<NNN>): <Tn> - <descripción>`).
 - **Validación Final**: `@reviewer` audita la feature completa RF por RF antes de autorizar la apertura del Pull Request vía `/review-and-pr`.
+
+---
+
+## 5. Estándar de Encuestas y Preguntas al Usuario (Tarjetas con Opción Libre)
+
+En cualquier fase donde el agente necesite consultar decisiones de diseño, resolver vacíos de la spec o clarificar requerimientos con el usuario:
+- **Herramienta Nativa (`ask_question`)**: Si el entorno la admite, usar obligatoriamente la herramienta interactiva de preguntas. Proporcionar las opciones sin numerar, la recomendada de primero con `(Recommended)`. La interfaz muestra tarjetas interactivas y la opción automática para escribir otra respuesta (*"Other"*).
+- **Modo Chat / Markdown Plano**: Formatear como **Tarjetas de Opciones**:
+  ```markdown
+  > **[Pregunta concreta sobre la decisión o caso límite]**
+  >
+  > - **[A] (Recomendada)**: [Opción sugerida con justificación arquitectural]
+  > - **[B]**: [Opción alternativa]
+  > - **[O] Escribir otra respuesta**: (Escribe tu alternativa personalizada si aplica).
+  ```
+- **Regla Estricta**: Queda prohibido formular preguntas abiertas difusas o listados densos sin opciones predefinidas. Siempre se ofrece una vía rápida de selección y una salida abierta para texto libre.
