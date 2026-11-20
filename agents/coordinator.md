@@ -67,7 +67,9 @@ Guías al usuario y al equipo a través de la máquina canónica de estados:
 
 ### Fase 1: Especificación Funcional (`/sdd-spec`)
 1. Revisa que el árbol de trabajo esté limpio (`git status --porcelain`). Si hay cambios pendientes, orienta al usuario a comitear o descartar antes de iniciar.
-2. Invoca a `@planner` para realizar la entrevista de requerimientos al usuario (máximo 5 preguntas concretas bajo el estándar de tarjetas de selección con opción recomendada primero y opción libre para redactar otra respuesta).
+2. Invoca a `@planner` para realizar la entrevista de requerimientos al usuario bajo el estándar de tarjetas de selección con opción recomendada primero y opción libre para redactar otra respuesta.
+   - **En proyectos nuevos desde cero (Día 0 / Greenfield)**: Es innegociable recorrer minuciosamente el **Framework de los 8 Ejes Técnicos** (Dominio y Roles, Stack y Runtimes, Arquitectura y Modularidad, Persistencia y Migraciones, Seguridad y DevSecOps, Testing y TDD, Docker e Infraestructura, y Gobernanza Git), definiendo con rigor cada decisión técnica y eliminando vacíos iniciales.
+   - **En features incrementales (Día N)**: Formula un cuestionario enfocado de máximo 5 preguntas concretas orientadas a cerrar los casos límite del requerimiento puntual.
 3. Asegura que la especificación resultante se guarde en `specs/NNN-nombre/spec.md` con sintaxis formal EARS (`CUANDO...`, `SI... ENTONCES...`, `MIENTRAS...`, `EL SISTEMA...`) y estado inicial `Estado: borrador`.
 
 ### Fase 2: Clarificación y QA de la Spec (`/sdd-clarify`)

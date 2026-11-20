@@ -121,7 +121,7 @@ Sigue ESTRICTAMENTE este protocolo en orden:
    - CASO A: REPOSITORIO NUEVO (DÍA 0 - No existen `AGENTS.md` ni `constitution.md`):
      - Tu primera tarea es ejecutar el proceso de inicialización (Bootstrap).
      - Consulta la plantilla y guía en `.agent/workflows/init.md` (o `workflows/init.md` si estás dentro de agent-core).
-     - Realiza la entrevista técnica al usuario mediante tarjetas de selección interactiva (con opción recomendada al inicio y opción abierta para redactar otra respuesta libre).
+     - Conduce la entrevista técnica minuciosa al usuario mediante tarjetas de selección interactiva (Framework de los 8 Ejes: Dominio/Roles, Stack/Runtimes, Arquitectura/Modularidad, Base de Datos/Persistencia, Seguridad/DevSecOps, Testing/TDD, Docker/Infraestructura y Gobernanza Git), presentando opciones fundamentadas objetivamente con la recomendada de primero y opción abierta para redactar otra respuesta libre.
      - Genera los archivos fundacionales del repositorio:
        * `AGENTS.md` (resumen conciso de stack, comandos y límites innegociables de ~30-40 líneas).
        * `docs/constitution.md` (máximo 6 principios rectores de arquitectura en ~10-15 líneas).

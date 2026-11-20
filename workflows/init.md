@@ -78,27 +78,102 @@ Si se ejecuta en un proyecto destino independiente:
 
 ---
 
-### Fase 4: Auditoría o Entrevista Técnica (Tarjetas de Selección con Opción Libre)
+### Fase 4: Auditoría o Entrevista Técnica Minuciosa (Tarjetas de Selección con Opción Libre)
 
 **Estándar Obligatorio de Formulación**: Todas las preguntas de esta fase deben presentarse obligatoriamente bajo el formato de **tarjetas de selección con opción libre**:
-- Si la plataforma dispone de herramienta interactiva nativa (ej. `ask_question`), invocarla enviando las opciones sin numerar con `(Recommended)` en la sugerencia preferente según el contexto analizado (la UI despliega tarjetas de clic y la opción automática para escribir otra respuesta).
+- Si la plataforma dispone de herramienta interactiva nativa (ej. `ask_question`), invocarla enviando las opciones sin numerar con `(Recommended)` en la sugerencia preferente según el análisis técnico objetivo (la UI despliega tarjetas interactivas de clic y la opción automática para escribir texto libre).
 - Si opera en texto plano / Markdown, estructurar cada pregunta como tarjetas visuales de selección con opciones `[A] (Recomendada)`, `[B]` y la opción explícita `[O] Escribir otra respuesta`.
-- Queda prohibido formular preguntas abiertas en texto plano sin opciones preconfiguradas.
+- Queda prohibido formular preguntas abiertas difusas en texto plano sin opciones preconfiguradas y fundamentadas técnicamente.
 
-#### Si es Proyecto Existente:
-1. Inspecciona los archivos clave del repositorio (árbol de directorios, manifiestos de dependencias, scripts de test, docker-compose, linters).
-2. Formula un máximo de 3 a 5 preguntas concretas sobre lo que **no se puede deducir del código** estructuradas en tarjetas:
-   - ¿Qué flujo de Git prefieres utilizar? (`(Recommended) branch_pr con ramas dedicadas y PRs`, `trunk con desarrollo directo en main`, u otra respuesta).
+---
+
+#### Escenario A: Repositorio Existente (Día N)
+1. Inspecciona los archivos clave del repositorio (árbol de directorios, manifiestos de dependencias, scripts de test, docker-compose, linters, schemas de base de datos).
+2. Formula un cuestionario técnico acotado (máximo 4 preguntas en tarjetas) sobre lo que **no se puede deducir del código**:
+   - ¿Qué flujo de Git prefieres utilizar? (`(Recommended) branch_pr con ramas dedicadas y PRs`, `trunk con desarrollo directo en main`).
    - ¿Cuáles son las reglas de dominio o trampas críticas que ningún agente debe romper?
-   - ¿Qué acciones o módulos están estrictamente prohibidos tocar o cambiar (guardrails)?
+   - ¿Qué acciones o módulos están estrictamente prohibidos tocar o cambiar (guardrails de seguridad)?
    - ¿Qué comando exacto de test consideras indispensable y cuál es tu servidor de desarrollo local (`DEV_SERVER_URL`)?
 
-#### Si es Proyecto Desde Cero (Greenfield):
-1. Entrevista al usuario mediante tarjetas de selección:
-   - Tipo de arquitectura inicial (`(Recommended) Monolito modular desacoplado`, `API REST backend pura`, `Aplicación Frontend SPA`, `CLI / Herramienta de terminal`).
-   - Stack tecnológico principal (ofreciendo las opciones más robustas del ecosistema con recomendación fundamentada).
-   - Runner de pruebas determinista a configurar (ej. Vitest, Pytest, Jest, Cargo test).
-   - Modo de Git preferido (`(Recommended) branch_pr con PR`, `trunk directo`).
+---
+
+#### Escenario B: Proyecto Desde Cero (Día 0 / Greenfield) — El Framework de los 8 Ejes Técnicos
+Para garantizar cimientos de ingeniería de software de nivel de producción desde el inicio, el agente conduce una **entrevista minuciosa y estructurada** recorriendo de forma sistemática los 8 ejes de decisión técnica. Cada pregunta presenta opciones objetivas con los pros/contras arquitectónicos y una alternativa recomendada:
+
+1. **Eje 1: Propósito de Negocio, Dominio y Usuarios / Roles**:
+   - *Objetivo y Problema*: ¿Qué problema central resuelve el sistema y cuál es la métrica de éxito operativa?
+   - *Actores y Roles*: ¿Qué tipos de usuarios interactuarán con la plataforma? (`(Recommended) Modelo RBAC granular (ej. ADMIN, OPERADOR, CLIENTE)`, `Solo autenticados vs públicos`, `Multi-inquilino / Multi-tenant con organizaciones`).
+   - *Superficie de Consumo*: ¿Cuál es la interfaz primaria de la aplicación? (`(Recommended) API REST modular + Frontend Web SPA`, `API REST pura / Backend headless`, `Full-Stack con Server-Side Rendering (SSR)`, `CLI / Herramienta de terminal`).
+
+2. **Eje 2: Stack Tecnológico y Lenguajes (Frontend / Backend / Runtimes)**:
+   - *Backend Runtime & Lenguaje*: ¿Cuál será el motor principal del backend?
+     - `(Recommended) Node.js 20+ con TypeScript estricto ("strict": true, ESM "type": "module") y Express/Fastify` (Máxima portabilidad, tipado end-to-end, ecosistema rico).
+     - `Python 3.11+ con FastAPI y Pydantic v2` (Ideal para alto rendimiento asíncrono, IA y pipelines de datos).
+     - `Rust con Axum / Actix` (Máxima seguridad de memoria, rendimiento extremo y bajo consumo).
+     - `Go con Chi / Gin` (Simplicidad operacional, concurrencia ligera y binarios autocontenidos).
+   - *Frontend (si aplica)*:
+     - `(Recommended) Vue 3 con Composition API (<script setup lang="ts">), Vite y Tailwind CSS` (Reactividad granular, DX rápida y excelente mantenibilidad).
+     - `React 18+ con TypeScript, Vite y Tailwind CSS` (Ecosistema masivo y amplia compatibilidad de componentes).
+     - `Next.js App Router con SSR` (Para aplicaciones con requerimientos intensivos de SEO público).
+     - `Sin frontend en fase inicial (Backend puro / API first)`.
+
+3. **Eje 3: Arquitectura de Software, Modularidad y Manejo de Errores**:
+   - *Patrón de Organización*:
+     - `(Recommended) Monolito Modular Desacoplado por Dominio (Vertical Slices en src/modules/<dominio>/ conteniendo routes, controller, service y schemas)`: Evita el espagueti de capas horizontales y permite escalar o extraer microservicios a futuro sin reescribir.
+     - `Clean Architecture / Arquitectura Hexagonal estricta` (Dominio, Casos de Uso, Adaptadores e Infraestructura): Para sistemas con lógica de negocio altamente compleja.
+     - `Arquitectura en Capas Tradicional (controllers/, services/, models/)`: Solo para utilidades o prototipos muy pequeños.
+   - *Validación de Contratos y Tipado en Runtime*:
+     - `(Recommended) Esquemas Zod (o Pydantic v2) en límites de la API`: Validación estricta en runtime de `body`, `query` y `params` antes de que los datos alcancen el controlador, desacoplando tipos de TypeScript/Python inferidos automáticamente.
+   - *Manejo de Errores y Excepciones*:
+     - `(Recommended) Clase AppError desacoplada con códigos HTTP semánticos y middleware global de excepciones`: Prohíbe bloques `try/catch` vacíos o descontrolados y estandariza la salida JSON de errores (`{ status: "error", message: string, code?: string }`).
+
+4. **Eje 4: Persistencia, Base de Datos y Modelo de Datos**:
+   - *Motor de Persistencia*:
+     - `(Recommended) PostgreSQL 16+`: Transacciones ACID rigurosas, soporte relacional robusto, integridad referencial y columnas JSONB para esquemas semi-estructurados.
+     - `SQLite / LibSQL`: Para aplicaciones de escritorio, herramientas embebidas o desarrollo local ágil.
+     - `MongoDB`: Si el dominio requiere almacenamiento de documentos altamente dinámicos sin relaciones complejas.
+   - *Capa de Acceso a Datos / ORM*:
+     - `(Recommended) Prisma ORM`: Esquema declarativo unificado, migraciones automáticas versionadas (`prisma migrate`), generación de cliente tipado seguro y soporte transaccional nativo `$transaction`.
+     - `Drizzle ORM`: Tipado SQL nativo ultraligero y máximo control de rendimiento sin abstracciones pesadas.
+     - `SQLAlchemy 2.0`: Para proyectos Python con soporte exhaustivo de sesiones y migraciones Alembic.
+   - *Invariante de Integridad*: Toda mutación de estado que involucre más de una tabla debe encapsularse en una transacción atómica; cero cambios destructivos en base de datos sin migración reversible previa.
+
+5. **Eje 5: Seguridad, Autenticación y DevSecOps desde el Día 0**:
+   - *Autenticación y Sesiones*:
+     - `(Recommended) JWT firmado (HS256/RS256) con expiración corta (15 min) en headers Bearer o cookies HttpOnly con rotación de refresh tokens`.
+     - `Sesiones stateful basadas en cookies seguras respaldadas en Redis`.
+     - `Autenticación Delegada (OAuth2 / OIDC con Google/GitHub/Auth0)`.
+   - *Control de Acceso (RBAC)*: Middleware declarativo de roles (`authorizeRole(['ADMIN', 'OPERADOR'])`) que intercepta las rutas protegidas antes de la ejecución de lógica de negocio.
+   - *Política Estricta de Secretos (Blindaje DevSecOps)*:
+     - `(Recommended) Cero fallbacks de credenciales en código`: Prohibido hardcodear contraseñas o conexiones (`|| 'postgresql://...'`).
+     - Validación obligatoria de variables requeridas desde `.env` al arranque mediante schema tipado; si falta una variable crítica, el proceso aborta inmediatamente con mensaje explícito.
+     - Generación obligatoria de `.env.example` con valores de ejemplo y documentación clara.
+
+6. **Eje 6: Estrategia de Pruebas (TDD) y Comandos Deterministas**:
+   - *Runner de Pruebas*:
+     - `(Recommended) Vitest run`: Compatibilidad nativa ESM, velocidad extrema en Node.js/TypeScript y APIs compatibles con Jest.
+     - `Pytest`: Estándar indiscutible en Python con fixtures modulares.
+     - `Cargo test`: Runner nativo integrado de Rust.
+   - *Comandos Obligatorios de Terminación Determinista (sin watch mode)*:
+     - `TEST_COMMAND`: Comando de suite de pruebas que ejecuta una sola vez y sale con código 0 o 1 (ej. `npx vitest run`, `pytest`, `cargo test`).
+     - `TYPECHECK_COMMAND`: Chequeo estático de tipos sin emitir código (ej. `npx tsc --noEmit`, `mypy .`).
+     - `LINT_COMMAND`: Linter de formato y sintaxis (ej. `npm run lint`, `ruff check .`).
+   - *Aislamiento de Pruebas*: Base de datos de test local dedicada (`DATABASE_URL_TEST` en `localhost`), blindada contractualmente contra bases de datos remotas o de producción.
+
+7. **Eje 7: Empaquetado, Contenedores (Docker) e Infraestructura**:
+   - *Dockerización*:
+     - `(Recommended) Docker multi-stage build optimizado en Alpine con BuildKit`: Separa la fase de compilación (deps + build) de la imagen de producción final, ejecuta bajo usuario no-root por seguridad y maximiza la caché de capas.
+     - `Despliegue bare-metal o PaaS (Railway / Render / Fly.io)` con scripts de arranque directos (`npm run build && npm start`).
+   - *Observabilidad Inicial*: Logs estructurados en formato JSON para backend (`pino`, `winston` o `loguru`) con correlación de request ID.
+
+8. **Eje 8: Flujo de Trabajo en Git y Gobernanza del Repositorio**:
+   - *Estrategia de Ramas*:
+     - `(Recommended) branch_pr`: Todo desarrollo ocurre en ramas dedicadas (`feature/*`, `fix/*`, `chore/*`) y se integra a la rama base exclusivamente mediante Pull Request validado por CI.
+     - `trunk`: Commits atómicos directos en la rama principal `main` (solo para proyectos unipersonales muy pequeños).
+   - *Rama Base de Integración*:
+     - `(Recommended) develop`: Rama de integración activa pre-producción con sincronización periódica a `main` protegida.
+     - `main`: Rama única de despliegue continuo.
+   - *Regla de Salvaguarda Humana*: Autorización explícita requerida antes de abrir PR, fusionar PR y eliminar ramas locales o remotas.
 
 ---
 

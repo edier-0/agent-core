@@ -64,3 +64,43 @@ Sabes que has terminado cuando puedes predecir con exactitud cómo respondería 
 - **Cero Preguntas Abiertas Difusas**: Nunca lances preguntas al aire sin opciones base concretas.
 - **Opción Recomendada Siempre Primero**: Fundamenta técnicamente la primera opción basada en la arquitectura y buenas prácticas.
 - **Salida Libre Obligatoria**: Ofrece siempre la posibilidad de escribir otra respuesta (*"Other"* / `[O]`) para que el usuario nunca quede atrapado si ninguna alternativa cubre su necesidad de negocio.
+
+---
+
+## 4. Framework de Entrevista Exhaustiva para Proyectos Desde Cero (Día 0 / Greenfield)
+
+Cuando se inicializa un repositorio nuevo o se define la primera versión de un proyecto desde cero, queda **estrictamente prohibido conformarse con una entrevista superficial**. Para garantizar estándares de producción, escalabilidad y mantenibilidad desde el Día 0, el agente debe recorrer exhaustivamente los **8 Ejes de Decisión Técnica**:
+
+1. **Eje 1: Propósito de Negocio, Dominio y Roles**:
+   - Problema medular a resolver y métricas de éxito.
+   - Actores, roles y modelo RBAC (ej. ADMIN, OPERADOR, CLIENTE).
+   - Superficie de consumo (API REST modular + Frontend SPA, SSR, CLI, Backend headless).
+2. **Eje 2: Stack Tecnológico Completo y Runtimes**:
+   - Backend runtime y lenguaje (Node.js 20+ con TS estricto, Python 3.11+ con FastAPI, Rust con Axum, Go, .NET).
+   - Tipado riguroso (`strict: true`, ESM `"type": "module"`).
+   - Frontend (Vue 3 `<script setup lang="ts">` + Vite + Tailwind, React + Vite, Next.js SSR, o Headless).
+3. **Eje 3: Arquitectura de Software, Modularidad y Manejo de Errores**:
+   - Organización modular por dominio (`src/modules/<dominio>/` en vertical slices con routes, controller, service y schemas).
+   - Validación estricta de contratos en runtime en límites de API (Zod / Pydantic v2 para body, query y params).
+   - Manejo centralizado de excepciones con clase `AppError` y middleware global con salida JSON estándar.
+4. **Eje 4: Persistencia, Base de Datos y Modelo de Datos**:
+   - Motor de persistencia (PostgreSQL 16+ relacional ACID, SQLite local-first, MongoDB).
+   - ORM / Capa de datos con migraciones versionadas (Prisma ORM, Drizzle, SQLAlchemy 2.0).
+   - Invariante de transaccionalidad atómica para operaciones multi-tabla y cero cambios destructivos sin migración.
+5. **Eje 5: Seguridad, Autenticación y DevSecOps desde el Día 0**:
+   - Autenticación y sesiones (JWT con rotación y expiración corta, cookies HttpOnly, OAuth2).
+   - Control de acceso (RBAC mediante middleware declarativo `authorizeRole`).
+   - Blindaje DevSecOps: cero credenciales en código (`|| 'postgresql://...'`), validación estricta de `.env` al arranque y generación de `.env.example`.
+6. **Eje 6: Estrategia de Testing (TDD) y Comandos Deterministas**:
+   - Runner de pruebas determinista de ejecución única (Vitest run, Pytest, Cargo test).
+   - Comandos obligatorios: `TEST_COMMAND`, `TYPECHECK_COMMAND`, `LINT_COMMAND`.
+   - Aislamiento de base de datos de test en localhost con triple blindaje contra entornos de producción.
+7. **Eje 7: Empaquetado, Contenedores (Docker) e Infraestructura**:
+   - Docker multi-stage build optimizado en Alpine con BuildKit, usuario no-root y caché granular.
+   - Observabilidad inicial: logs estructurados JSON con correlation ID.
+8. **Eje 8: Flujo Git y Gobernanza del Repositorio**:
+   - Modo de flujo (`branch_pr` con ramas dedicadas y PRs obligatorios tras CI verde vs `trunk`).
+   - Rama base (`develop` pre-producción y `main` protegida).
+   - Salvaguarda: autorización humana obligatoria antes de abrir PR, fusionar PR o borrar ramas.
+
+*El agente no procede a la generación de archivos ni a la redacción de specs hasta haber resuelto de manera concluyente y estructurada estos 8 ejes con el usuario.*

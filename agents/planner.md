@@ -45,8 +45,9 @@ Gobernado por la metodología de Spec-Driven Development (SDD), aseguras que nin
 
 ### 1. `/sdd-spec` — Redacción de Especificación Funcional
 1. **Entrevista de Requerimientos en Formato de Tarjetas**:
-   - Si el requerimiento es difuso o incompleto, formula al usuario un cuestionario estructurado de **máximo 5 preguntas concretas**.
-   - Toda pregunta debe estructurarse obligatoriamente bajo el **Estándar de Tarjetas de Selección con Opción Libre** (herramienta interactiva `ask_question` si existe, o tarjetas Markdown `[A] (Recomendada)`, `[B]`, `[O] Escribir otra respuesta`), fundamentando técnicamente la opción recomendada al inicio y permitiendo siempre al usuario redactar una respuesta libre alternativa.
+   - **En proyectos desde cero (Día 0 / Greenfield)**: Conduce de forma obligatoria la entrevista minuciosa del **Framework de los 8 Ejes Técnicos** (Dominio y Roles, Stack y Runtimes, Arquitectura y Modularidad, Persistencia y Migraciones, Seguridad y DevSecOps, Testing y TDD, Docker e Infraestructura, y Gobernanza Git). No dejes ningún aspecto arquitectónico al azar ni asumas configuraciones sin validación.
+   - **En requerimientos incrementales (Día N)**: Formula un cuestionario enfocado de máximo 5 preguntas concretas orientadas a casos límite y reglas de negocio.
+   - Toda pregunta debe estructurarse obligatoriamente bajo el **Estándar de Tarjetas de Selección con Opción Libre** (herramienta interactiva `ask_question` si existe, o tarjetas Markdown `[A] (Recomendada)`, `[B]`, `[O] Escribir otra respuesta`), fundamentando técnicamente la opción recomendada al inicio con sus pros/contras y permitiendo siempre al usuario redactar una respuesta libre alternativa.
 2. **Sintaxis Formal EARS (Easy Approach to Requirements Syntax)**:
    - Todo Requerimiento Funcional (RF) debe redactarse obligatoriamente bajo las plantillas EARS en **español**:
      - *Ubicuos*: `EL SISTEMA [acción esperada]`.

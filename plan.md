@@ -182,6 +182,16 @@ C:\Users\edier\Documents\EDIER\agent-core\
     1. Si el entorno admite herramientas interactivas nativas (ej. `ask_question`), se invoca obligatoriamente proporcionando opciones sin numerar, la recomendación de primero con `(Recommended)` y aprovechando la opción nativa "Other" para respuesta libre.
     2. Si el entorno opera exclusivamente en chat / Markdown plano, se renderizan tarjetas visuales `[A] (Recomendada)`, `[B]`, etc., y la opción obligatoria `[O] Escribir otra respuesta` para entrada libre.
     3. Queda prohibido formular preguntas abiertas difusas o listados densos sin opciones predefinidas.
+- **Framework de Entrevista Exhaustiva de Arquitectura e Ingeniería (Día 0 / Greenfield)**:
+  - Al iniciar un proyecto desde cero, queda prohibido conformarse con preguntas superficiales de alto nivel. El agente recorre obligatoriamente los **8 Ejes Técnicos** para definir la primera versión con nivel de producción y cero cabos sueltos:
+    1. *Dominio y Roles*: Problema central, métricas de éxito, roles RBAC y superficie de consumo (API REST + SPA, SSR, CLI, headless).
+    2. *Stack y Runtimes*: Lenguaje, runtime (Node/TS estricto, Python/FastAPI, Rust/Axum, Go), estándares de compilación y framework frontend si aplica (Vue 3, React, Next.js).
+    3. *Arquitectura y Modularidad*: Monolito modular por dominio (`src/modules/<dominio>/` en vertical slices), validación estricta de contratos en runtime (Zod / Pydantic v2 en body/query/params) y manejo centralizado de excepciones (`AppError` + middleware global).
+    4. *Persistencia y Migraciones*: Motor (PostgreSQL 16+ relacional ACID, SQLite, etc.), ORM declarativo con migraciones versionadas (Prisma, Drizzle, SQLAlchemy) y transacciones atómicas para mutaciones complejas.
+    5. *Seguridad y DevSecOps*: Autenticación (JWT con rotación o sesiones seguras), RBAC declarativo, blindaje estricto de credenciales (cero fallbacks en código) y variables requeridas desde `.env`.
+    6. *Testing y Calidad (TDD)*: Runner determinista de terminación única (Vitest, Pytest, Cargo test), suite aislada en localhost blindada contra producción, y comandos `TEST_COMMAND`, `TYPECHECK_COMMAND`, `LINT_COMMAND`.
+    7. *Empaquetado e Infraestructura*: Docker multi-stage build optimizado en Alpine con BuildKit, usuario no-root y observabilidad con logs JSON.
+    8. *Gobernanza Git*: Modo `branch_pr` con ramas dedicadas y PRs obligatorios validados por CI, y confirmación humana requerida para apertura/merge/borrado de ramas.
 
 ### B. Mapeo para los 4 Agentes Principales y Motor de Auto-Adopción
 - **Entornos Multiagente Nativos vs Monohilo (Diferenciación de Despacho)**:
@@ -231,7 +241,7 @@ C:\Users\edier\Documents\EDIER\agent-core\
      - CASO A: REPOSITORIO NUEVO (DÍA 0 - No existen `AGENTS.md` ni `constitution.md`):
        - Tu primera tarea es ejecutar el proceso de inicialización (Bootstrap).
        - Consulta la plantilla y guía en `.agent/workflows/init.md` (o `workflows/init.md` si estás dentro de agent-core).
-       - Realiza la entrevista técnica al usuario mediante tarjetas de selección interactiva (con opción recomendada al inicio y opción abierta para redactar otra respuesta libre).
+       - Conduce la entrevista técnica minuciosa al usuario mediante tarjetas de selección interactiva (Framework de los 8 Ejes: Dominio/Roles, Stack/Runtimes, Arquitectura/Modularidad, Base de Datos/Persistencia, Seguridad/DevSecOps, Testing/TDD, Docker/Infraestructura y Gobernanza Git), presentando opciones fundamentadas objetivamente con la recomendada de primero y opción abierta para redactar otra respuesta libre.
        - Genera los archivos fundacionales del repositorio:
          * `AGENTS.md` (resumen conciso de stack, comandos y límites innegociables).
          * `docs/constitution.md` (máximo 6 principios rectores de arquitectura).

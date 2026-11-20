@@ -22,6 +22,7 @@ Constitución → Spec → Clarificación → Plan → Tareas → Implementació
 4. **Centralización en `specs/`**: Cada spec reside exclusivamente en su propia carpeta en la raíz: `specs/NNN-nombre/` conteniendo `spec.md`, `plan.md` y `tasks.md`.
 5. **Máquina de Estados**: `borrador` → `clarificada` → `planificada` → `en_progreso` → `validada` → `completada` (o `descartada`).
 6. **Memoria Viva**: Al concluir cada fase o tarea, actualiza `MEMORY.md`.
+7. **Exhaustividad Inicial en Proyectos Greenfield (Día 0)**: Para crear la primera versión de los requerimientos de un proyecto nuevo, el agente debe recorrer de forma minuciosa el Framework de los 8 Ejes Técnicos (Dominio, Stack, Arquitectura, Base de Datos, Seguridad/DevSecOps, Testing/TDD, Infraestructura/Docker y Gobernanza Git) sin dejar cabos sueltos ni ambigüedades arquitectónicas antes de escribir código.
 
 ---
 
