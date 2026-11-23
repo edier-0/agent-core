@@ -58,7 +58,10 @@ Si durante la sincronización se detecta que otro PR concurrente integró una ca
 
 ---
 
-## Fase 3: Publicación (Push) de la Rama Temática
+## Fase 3: Publicación (Push Único y Controlado) de la Rama Temática
+
+**Política de Push Único y Controlado**:
+De acuerdo con las reglas innegociables de gobernanza de `agent-core`, queda terminantemente prohibido realizar `git push` intermedio durante las tareas individuales TDD (`T1` a `Tn`). El push remoto se autoriza **única y exclusivamente en esta Fase 3**, una vez completada la validación integral y obtenida la aprobación formal de `@reviewer` en `/sdd-validate`. Este paso es indispensable para publicar la rama en el repositorio remoto, permitir la apertura del Pull Request y disparar las compuertas automatizadas de CI en GitHub.
 
 Una vez rebasada y sincronizada limpiamente en local:
 1. El `@coordinator` despacha a `@implementer` para publicar la rama temática al repositorio remoto:

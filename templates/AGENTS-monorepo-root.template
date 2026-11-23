@@ -18,15 +18,17 @@ PKG_ADD_COMMAND="{{PKG_ADD_COMMAND}}"      # ej. pnpm add <pkg> --filter <modulo
 # Build y compilación cruzada
 BUILD_COMMAND="{{BUILD_COMMAND}}"          # ej. pnpm build / npm run build --workspaces
 
-# Suites de prueba
-TEST_COMMAND="{{TEST_COMMAND}}"            # Suite global de integración (ejecutada por @reviewer en /sdd-validate)
-{{LINT_COMMAND}}                           # Linter global
-{{TYPECHECK_COMMAND}}                      # Chequeo de tipos global
+# Suites de prueba (Enfoque Dual: Acotado para TDD atómico / Global para pre-PR)
+SCOPED_TEST_COMMAND="{{SCOPED_TEST_COMMAND}}"  # Suite rápida acotada al paquete/módulo (ej. pnpm --filter <modulo> test o cd packages/<modulo> && npm test)
+GLOBAL_TEST_COMMAND="{{GLOBAL_TEST_COMMAND}}"  # Suite global completa de integración (ejecutada por @reviewer en /sdd-validate y pre-PR)
+TEST_COMMAND="{{GLOBAL_TEST_COMMAND}}"         # Alias de compatibilidad global
+{{LINT_COMMAND}}                               # Linter global
+{{TYPECHECK_COMMAND}}                          # Chequeo de tipos global
 ```
 
 ## Estrategia de Testing en Monorrepo (Enfoque Dual)
-- **Durante Tareas Atómicas (`/sdd-implement`)**: `@implementer` corre el test acotado al submódulo modificado (declarado en la tarea de `tasks.md` o en el `AGENTS.md` local del paquete, ej. `pnpm test --filter auth`), permitiendo ciclos rápidos Red-Green-Refactor.
-- **Durante Validación Integral (`/sdd-validate`)**: `@reviewer` corre obligatoriamente la suite global (`TEST_COMMAND`) y `BUILD_COMMAND` en la raíz para garantizar que ningún cambio rompa paquetes consumidores.
+- **Durante Tareas Atómicas (`/sdd-implement`)**: `@implementer` ejecuta `SCOPED_TEST_COMMAND` acotado al submódulo modificado (declarado en la tarea de `tasks.md`, en `plan.md` o en el `AGENTS.md` local del paquete, ej. `pnpm test --filter auth`), permitiendo ciclos rápidos Red-Green-Refactor sin latencia de suite completa.
+- **Durante Validación Integral (`/sdd-validate`)**: `@reviewer` ejecuta obligatoriamente `GLOBAL_TEST_COMMAND` y `BUILD_COMMAND` en la raíz para garantizar que ningún cambio rompa paquetes consumidores o contratos cruzados antes de autorizar el PR.
 
 ## Configuración Git y Gobernanza
 - `GIT_WORKFLOW_MODE`: "{{GIT_WORKFLOW_MODE}}" # "branch_pr" o "trunk"

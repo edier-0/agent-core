@@ -59,13 +59,19 @@ Si se ejecuta en un proyecto destino independiente:
 ### Fase 2: Comprobación de Git
 
 1. **Auditoría de Git**:
-   - Comprueba si el directorio actual cuenta con control de versiones (`.git`).
-   - Si `.git` **NO existe**:
-     - Solicita confirmación explícita al usuario para inicializar Git:
-       ```bash
-       git init && git checkout -b main
-       ```
-     - Realiza un commit inicial vacío o con los archivos base para habilitar compuertas de Git y baseline de TDD.
+   - Comprueba si el directorio actual cuenta con control de versiones activo ejecutando `git status` (o verificando la presencia del directorio `.git`).
+   - Si no existe repositorio Git (`git status` falla con error de *not a git repository* o falta `.git`):
+     - El `@coordinator` presenta obligatoriamente una tarjeta de selección interactiva (`ask_question` o tarjeta visual):
+       - `[A] (Recommended) Inicializar nuevo repositorio Git local (git init -b main) y continuar con el arnés`.
+       - `[B] Cancelar inicialización para configurar Git manualmente de forma previa`.
+     - Si el usuario selecciona `[A]`:
+       - El `@coordinator` despacha a `@implementer` para inicializar el repositorio y crear la rama `main`:
+         ```bash
+         git init -b main
+         ```
+       - Realiza un commit inicial de línea base (baseline) para habilitar las compuertas de calidad de Git y el ciclo TDD.
+     - Si el usuario selecciona `[B]`:
+       - El workflow se detiene informando que se requiere un repositorio Git activo para operar con el arnés.
 
 ---
 

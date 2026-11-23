@@ -4,7 +4,9 @@ Software Factory Portátil y Arnés de Ingeniería de Software para Agentes de I
 
 ## Stack y Estructura
 - **Tecnologías**: Arnés agnóstico basado en Markdown, YAML, JSON, Bash/PowerShell y Model Context Protocol (MCP).
-- **Arquitectura**: Arnés modular en `agents/`, `workflows/`, `skills/`, `templates/` y `mcp/`.
+- **Arquitectura y Modelo Fábrica-Instalador**:
+  - En este repositorio fuente (`agent-core`), los componentes maestros residen directamente en la raíz (`agents/`, `workflows/`, `skills/`, `templates/`, `mcp/`).
+  - En proyectos cliente destino (`/init` o `/adopt`), el arnés se empaqueta e instala estrictamente dentro de `.agent/` ("Cero Basura en la Raíz").
 - **Rutas Clave**: Código y arnés en raíz (`agents/`, `skills/`, `workflows/`), especificaciones en `specs/`, adaptadores en `templates/`.
 
 ## Configuración de Git y Flujo de Trabajo
@@ -21,7 +23,7 @@ Software Factory Portátil y Arnés de Ingeniería de Software para Agentes de I
 - **Spec-Driven Development**: Ningún cambio sin spec aprobada en `specs/NNN-nombre/` (`spec.md` en EARS, `plan.md` y `tasks.md`).
 - **Test-Driven Development**: Rojo (test primero que falle) -> Verde (código mínimo) -> Refactor.
 - **Commits atómicos**: `<tipo>(<NNN>): <Tn> - <descripción en español>` con staging quirúrgico (`git add <rutas>`).
-- **Prohibido `git push` intermedio**: Los commits se acumulan en local hasta completar y validar la spec entera.
+- **Política de Git Push Único y Controlado**: Queda estrictamente prohibido realizar `git push` intermedio durante las tareas individuales TDD (`T1` a `Tn`). Se autoriza exactamente un único `git push -u origin <rama>` en la Fase 3 de `/review-and-pr` tras la validación integral y aprobación de `@reviewer` en `/sdd-validate`, como paso indispensable para abrir el Pull Request y activar las compuertas de CI en GitHub.
 
 ## Orquestación Multiagente y Visibilidad en UI
 - **Veto de Auto-Edición y Consola para el Coordinador**:
@@ -70,4 +72,4 @@ Software Factory Portátil y Arnés de Ingeniería de Software para Agentes de I
 ## Límites de Autoridad
 - **Siempre**: Seguir SDD y TDD; ejecutar compuertas de calidad pre-commit; auditar ausencia de credenciales.
 - **Pregunta antes**: Modificar arquitectura; abrir PR; fusionar PR; borrar ramas locales o remotas.
-- **Nunca**: Modificar código sin test previo en rojo; comitear secretos o tokens hardcodeados; usar `git add .` indiscriminado; pushear código roto o a medio implementar a ramas compartidas.
+- **Nunca**: Modificar código sin test previo en rojo; comitear secretos o tokens hardcodeados; usar `git add .` indiscriminado; pushear código intermedio, roto o a medio implementar a ramas compartidas (único push remoto autorizado tras validación integral en `/review-and-pr`).

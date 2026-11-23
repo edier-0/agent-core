@@ -82,7 +82,10 @@ La mayoría de los agentes de Inteligencia Artificial (como Claude Code, Cursor,
 
 ## 3. Cómo utilizar este repositorio Paso a Paso
 
-El arnés opera bajo el principio innegociable de **Contenedor Limpio y Cero Basura en Raíz**: toda la maquinaria, agentes, workflows y skills residen dentro de la carpeta `.agent/` del proyecto destino. La raíz del proyecto (`root`) queda 100% limpia para tu código fuente (`src/`, `AGENTS.md`, `MEMORY.md`, etc.).
+### El Modelo Fábrica-Instalador
+`agent-core` opera bajo una distinción arquitectónica fundamental:
+- **En este repositorio fuente (`agent-core`)**: Opera como la **fábrica maestra**. Sus componentes maestros residen directamente en la raíz (`agents/`, `workflows/`, `skills/`, `templates/`, `mcp/`), permitiendo su desarrollo, versionado y empaquetado como framework independiente.
+- **En proyectos cliente destino (`/init` o `/adopt`)**: Opera como el **instalador portátil**. Empaqueta e instala todo el arnés estrictamente dentro de `.agent/` bajo el principio innegociable de **Contenedor Limpio y Cero Basura en Raíz**, dejando la raíz del proyecto cliente 100% libre para el código de la aplicación del usuario (`src/`, `package.json`, etc.).
 
 ---
 
@@ -378,18 +381,35 @@ agent-core/
 │   ├── sdd-status.md             # Consulta de máquina de estados y archivado de canceladas
 │   └── review-and-pr.md          # Sincronización, rebase, PR en 3 niveles y eliminación autorizada
 │
-├── skills/                       # Batería de 27 skills agrupadas en 6 categorías
-│   ├── router/                   # using-agent-skills (Enrutador maestro del ecosistema)
-│   ├── methodology/              # sdd, test-driven-development, source-driven-development, idea-refine,
-│   │                             # interview-me, planning-and-task-breakdown, constraint-driven-development,
-│   │                             # doubt-driven-development
-│   ├── architecture/             # api-and-interface-design, incremental-implementation, context-engineering,
-│   │                             # documentation-and-adrs, observability-and-instrumentation, performance-optimization
-│   ├── quality/                  # code-review-and-quality, code-simplification, debugging-and-error-recovery,
-│   │                             # deprecation-and-migration
-│   ├── delivery/                 # git-pr-workflow, devsecops, docker-hardening, ci-cd-and-automation,
-│   │                             # shipping-and-launch
-│   └── frontend/                 # frontend-ui-engineering, browser-testing-with-devtools, ui-ux-pro-max
+├── skills/                       # Batería de 27 skills aplanadas (primer nivel skills/<nombre>/SKILL.md)
+│   │                             # Clasificación semántica por metadato YAML (category: <categoria>)
+│   ├── api-and-interface-design/ # (category: architecture) REST y contratos de interfaz
+│   ├── browser-testing-with-devtools/ # (category: frontend) Verificación interactiva Chrome DevTools
+│   ├── ci-cd-and-automation/     # (category: delivery) Pipelines y compuertas CI
+│   ├── code-review-and-quality/  # (category: quality) Auditoría multidimensional
+│   ├── code-simplification/      # (category: quality) Reducción de complejidad
+│   ├── constraint-driven-development/ # (category: methodology) Barras de calidad e invariantes
+│   ├── context-engineering/      # (category: architecture) Gestión óptima de contexto
+│   ├── debugging-and-error-recovery/ # (category: quality) Triaje sistemático de causa raíz
+│   ├── deprecation-and-migration/# (category: quality) Migraciones de BD y retiro seguro
+│   ├── devsecops/                # (category: delivery) Blindaje de secretos y dependencias
+│   ├── docker-hardening/         # (category: delivery) Contenedores seguros multi-stage
+│   ├── documentation-and-adrs/   # (category: architecture) Registro de ADRs y memoria
+│   ├── doubt-driven-development/ # (category: methodology) Examen adversarial de decisiones
+│   ├── frontend-ui-engineering/  # (category: frontend) UIs profesionales y accesibles
+│   ├── git-pr-workflow/          # (category: delivery) Control de versiones y ramas
+│   ├── idea-refine/              # (category: methodology) Refinamiento de conceptos
+│   ├── incremental-implementation/# (category: architecture) Rebanadas verticales delgadas
+│   ├── interview-me/             # (category: methodology) Entrevista socrática de requerimientos
+│   ├── observability-and-instrumentation/# (category: architecture) Logs JSON y métricas
+│   ├── performance-optimization/ # (category: architecture) Erradicación de N+1 y profiling
+│   ├── planning-and-task-breakdown/# (category: methodology) Desglose de tareas (plan.md / tasks.md)
+│   ├── sdd/                      # (category: methodology) Guía canónica Spec-Driven Development
+│   ├── shipping-and-launch/      # (category: delivery) Listas de verificación pre-lanzamiento
+│   ├── source-driven-development/# (category: methodology) Fundamentación en docs oficiales
+│   ├── test-driven-development/  # (category: methodology) Ciclo TDD Red-Green-Refactor
+│   ├── ui-ux-pro-max/            # (category: frontend) Catálogo UI/UX y sistema de diseño
+│   └── using-agent-skills/       # (category: router) Enrutador y meta-skill maestro
 │
 ├── templates/                    # 13 Plantillas universales y adaptadores por plataforma
 │   ├── AGENTS.md.template        # Resumen conciso de stack y reglas (~30-40 líneas)
@@ -427,7 +447,7 @@ agent-core/
 2. **TDD Innegociable (Patrón Prove-It)**: Escribe siempre primero el test que falle en rojo, implementa el código mínimo para ponerlo en verde y refactoriza. Queda prohibido escribir código sin test previo.
 3. **Cero Credenciales en Código (DevSecOps)**: Prohibido hardcodear contraseñas, claves API, tokens o cadenas de conexión (`|| 'postgresql://...'`). Todo script exige variables desde `.env` y falla de inmediato si no están presentes.
 4. **Blindaje de Bases de Datos de Producción**: Queda terminantemente prohibido ejecutar pruebas automatizadas o semilleros alteradores contra bases de datos remotas o de producción.
-5. **Gobernanza Git y Pull Requests**: La rama base nunca recibe merges directos locales; toda integración se realiza mediante Pull Request validado por compuertas de CI en verde.
+5. **Gobernanza Git, Pull Requests y Push Único Controlado**: La rama base nunca recibe merges directos locales; toda integración se realiza mediante Pull Request validado por compuertas de CI en verde. Se prohíbe terminantemente realizar `git push` intermedio durante las tareas atómicas TDD; se ejecuta exactamente un único `git push -u origin <rama>` en la Fase 3 de `/review-and-pr` tras la validación integral de `@reviewer` en `/sdd-validate`.
 6. **Salvaguarda Humana de Ramas**: El agente debe solicitar siempre autorización explícita al usuario **antes de abrir un PR, antes de fusionar un PR y antes de borrar cualquier rama local o remota**.
 7. **Estándar de Encuestas en Tarjetas con Opción Libre**: Toda pregunta, entrevista o clarificación dirigida al usuario debe formularse como tarjetas de selección interactivas (con la opción recomendada al inicio y la opción obligatoria para redactar otra respuesta libre), prohibiendo preguntas abiertas difusas.
 8. **Normalización Universal de Rutas**: Toda referencia a archivos en documentación, scripts y llamadas a herramientas utiliza obligatoriamente **barras diagonales directas (`/`)**.
@@ -437,8 +457,8 @@ agent-core/
 
 ## 11. Preguntas Frecuentes (FAQ)
 
-#### ¿Por qué todos los archivos del arnés se mueven a `.agent/`?
-Para preservar la pureza de tu repositorio. En tu proyecto, la raíz pertenece a tu software (`src/`, `package.json`, etc.). Al aislar el arnés en `.agent/`, evitas contaminar tu repositorio con herramientas de IA y facilitas actualizar el arnés a futuro con `/init --update`.
+#### ¿Por qué todos los archivos del arnés se mueven a `.agent/` en proyectos cliente?
+Bajo el modelo Fábrica-Instalador, `agent-core` mantiene sus archivos en la raíz como repositorio fuente, pero en los proyectos cliente destino preserva la pureza del repositorio: la raíz pertenece a tu software (`src/`, `package.json`, etc.). Al aislar el arnés en `.agent/`, evitas contaminar tu código con herramientas de IA y facilitas actualizar el arnés a futuro con `/init --update`.
 
 #### ¿Puedo usar `agent-core` con cualquier lenguaje y framework?
 Sí. `agent-core` es 100% agnóstico. Funciona con Node.js, TypeScript, Python, Go, Rust, Java, C#, PHP o cualquier otra tecnología. La disciplina de especificación (EARS) y pruebas (TDD) es universal.

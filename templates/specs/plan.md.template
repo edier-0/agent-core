@@ -38,9 +38,9 @@
 - **Pruebas Visuales con Chrome DevTools MCP (si impacta UI)**:
   - Verificación interactiva en `DEV_SERVER_URL` tras levantar el servidor local con `START_DEV_COMMAND`.
   - Inspección de consola de JavaScript (cero errores/warnings no controlados) y verificación de accesibilidad.
-- **Comandos de Prueba Requeridos**:
-  - En desarrollo atómico: `{{SCOPED_OR_LOCAL_TEST_COMMAND}}`
-  - En validación integral final: `{{GLOBAL_TEST_COMMAND}}`
+- **Comandos de Prueba Requeridos (Enfoque Dual)**:
+  - `SCOPED_TEST_COMMAND`: `{{SCOPED_TEST_COMMAND}}` (Suite rápida acotada al módulo para el ciclo TDD atómico en `/sdd-implement`)
+  - `GLOBAL_TEST_COMMAND`: `{{GLOBAL_TEST_COMMAND}}` (Suite completa de integración ejecutada antes del PR en `/sdd-validate`)
 
 ---
 

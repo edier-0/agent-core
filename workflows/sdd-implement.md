@@ -11,11 +11,22 @@ Este workflow ejecuta una tarea individual de `specs/NNN-nombre/tasks.md`. Es ej
 ## Parámetros e Inferencia de Tarea
 
 ```bash
-/sdd-implement [Tn]
+/sdd-implement [Tn] [--step | --auto]
 ```
-- **Sin argumento**: Escanea `specs/NNN-nombre/tasks.md` y selecciona automáticamente la primera tarea pendiente (`- [ ]`).
-- **Con argumento (ej. `/sdd-implement T2`)**: Ejecuta específicamente la tarea solicitada.
-- **Si todas las tareas están completas (`- [x]`)**: Informa al usuario que la implementación está finalizada y sugiere ejecutar `/sdd-validate`.
+
+### Modos de Ejecución y Menú Interactivo
+1. **Sin Argumentos ni Flags (`/sdd-implement`)**:
+   El `@coordinator` detecta la siguiente tarea pendiente en `specs/NNN-nombre/tasks.md` y presenta obligatoriamente un menú interactivo mediante tarjeta de selección (`ask_question` o tarjeta visual):
+   - `[A] (Recommended) Modo Paso a Paso (--step)`: Ejecuta la siguiente tarea atómica y pausa tras el commit convencional, solicitando confirmación explícita del usuario antes de avanzar a la próxima.
+   - `[B] Autonomía Continua (--auto)`: Ejecuta secuencialmente todo el lote de tareas pendientes de la spec (`Tn` $\rightarrow$ `Tn+1` $\rightarrow$ ...), actualizando el progreso en tiempo real (`update_focus` y casillas `- [x]` en `tasks.md`), deteniéndose únicamente si surge un fallo de tests, un bloqueo técnico o al completar la última tarea.
+   - `[C] Siguiente Tarea Única`: Ejecuta estrictamente la próxima tarea pendiente y finaliza la sesión sin encadenar ni preguntar por la siguiente.
+2. **Con Flags CLI Explícitos**:
+   - `/sdd-implement --step`: Inicia o continúa la ejecución en modo supervisado paso a paso con pausa post-tarea.
+   - `/sdd-implement --auto`: Inicia o continúa en modo de autonomía continua para todo el lote de tareas pendientes.
+   - `/sdd-implement Tn` (ej. `/sdd-implement T2`): Ejecuta específicamente la tarea solicitada.
+   - `/sdd-implement Tn --step` o `/sdd-implement Tn --auto`: Inicia desde la tarea indicada con el modo seleccionado.
+3. **Si todas las tareas están completas (`- [x]`)**:
+   Informa al usuario que la implementación de la spec ha finalizado y sugiere ejecutar `/sdd-validate`.
 
 ---
 
@@ -94,6 +105,13 @@ Antes de commitear, se validan obligatoriamente tres condiciones:
 1. Marca la tarea como completada en `specs/NNN-nombre/tasks.md`:
    - Cambia `- [ ] Tn: ...` a `- [x] Tn: ...` y remueve la sub-viñeta de checkpoint.
    - *Nota de Permisos*: `@implementer` **nunca edita `spec.md`** (su permiso de edición sobre `specs/**/spec.md` está estrictamente denegado). La gestión del ciclo de vida y los metadatos de `spec.md` corresponden de forma exclusiva a `@planner`.
-2. Reporta el avance y sugiere el siguiente paso:
-   - Si quedan tareas pendientes: sugiere ejecutar la siguiente tarea con `/sdd-implement`.
-   - Si se completó la última tarea: sugiere pasar a la validación integral con `/sdd-validate`.
+2. **Reporte de Avance y Conducción según el Modo**:
+   - En **Modo Paso a Paso (`--step`)**:
+     - Reporta la tarjeta sintética de la tarea completada (tests en verde, archivos tocados, commit hash).
+     - Si quedan tareas pendientes: solicita confirmación al usuario para continuar con la siguiente tarea.
+     - Si se completó la última tarea: sugiere pasar a la validación integral con `/sdd-validate`.
+   - En **Modo Autonomía Continua (`--auto`)**:
+     - Notifica el avance en vivo actualizando `update_focus` y marcando la casilla en `tasks.md`.
+     - Si quedan tareas pendientes: encadena inmediatamente la ejecución de la siguiente tarea sin pausar.
+     - Si se completó la última tarea: se detiene e informa al usuario que todo el lote ha sido completado con éxito, sugiriendo invocar `/sdd-validate`.
+   - Ante cualquier **fallo de tests o bloqueo técnico**: la autonomía continua **se detiene de inmediato** y devuelve el control al usuario con el diagnóstico de error.

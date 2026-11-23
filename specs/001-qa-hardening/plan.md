@@ -3,7 +3,7 @@
 - **Spec Vinculada**: `specs/001-qa-hardening/spec.md`
 - **Autor / Rol**: `@planner` (System Architect Planner)
 - **Fecha**: 2026-11-23
-- **Estado**: Propuesta Técnica de Hardening (Pendiente de Aprobación de Categoría B)
+- **Estado**: implementado
 
 ---
 
@@ -159,7 +159,7 @@ Los hallazgos se estructuran en dos categorías operativas:
   Normalizar el parser de respuestas del coordinador:
   - En plataformas con UI interactiva (`ask_question`): canal estructurado nativo.
   - En interfaces de texto plano: aceptar indistintamente la letra clave (`A`, `a`, `[A]`), el número ordinal (`1`), o una coincidencia léxica parcial con el título de la opción.
-- **Archivos Afectados**: `AGENTS.md`, `skills/methodology/interview-me/SKILL.md`.
+- **Archivos Afectados**: `AGENTS.md`, `skills/interview-me/SKILL.md`.
 
 #### A.12 Firma Determinista de Detección de README de `agent-core` en `/adopt` (Hallazgo 11)
 - **Problema**: `/adopt` indica mover el `README.md` a `.agent/README.md` si contiene el texto de `agent-core`, sin definir cadenas exactas o firmas.
@@ -177,7 +177,7 @@ Los hallazgos se estructuran en dos categorías operativas:
   1. **Alcance Cognitivo**: 1 único caso de prueba unitario (fase roja) y el código mínimo necesario para superarlo (fase verde).
   2. **Volumen de Código**: Modificación de máximo 1 a 3 archivos y un diff no superior a ~100-150 líneas netas.
   3. **Autonomía de Ejecución**: Un ciclo de trabajo completable por el modelo en 2 a 4 turnos de herramientas sin requerir replanificación arquitectónica.
-- **Archivos Afectados**: `workflows/sdd-tasks.md`, `skills/methodology/planning-and-task-breakdown/SKILL.md`.
+- **Archivos Afectados**: `workflows/sdd-tasks.md`, `skills/planning-and-task-breakdown/SKILL.md`.
 
 #### A.14 Protocolo de Descarte de Specs con Commits en la Rama (`/sdd-status --cancel`) (Hallazgo 6)
 - **Problema**: Al cancelar una spec en modo `branch_pr`, se archiva `spec.md` y se regresa a la rama base, dejando código huérfano en la rama temático sin definir qué hacer con ella.
@@ -196,10 +196,10 @@ Los hallazgos se estructuran en dos categorías operativas:
 - **Problema**: Colisión si la rama remota `feature/NNN-nombre` ya existe con historial divergente generado por otro colaborador.
 - **Causa Raíz**: Asumir entorno monousuario local.
 - **Solución Técnica**:
-  En `workflows/sdd-spec.md` y `skills/delivery/git-pr-workflow/SKILL.md`:
+  En `workflows/sdd-spec.md` y `skills/git-pr-workflow/SKILL.md`:
   1. Antes de crear la rama local, ejecutar: `git ls-remote --heads origin feature/NNN-*`.
   2. Si la rama ya existe en el remoto, el agente propone un sufijo diferenciador (ej. `feature/NNN-slug-dev2` o `feature/NNN-slug-<timestamp>`).
-- **Archivos Afectados**: `workflows/sdd-spec.md`, `skills/delivery/git-pr-workflow/SKILL.md`.
+- **Archivos Afectados**: `workflows/sdd-spec.md`, `skills/git-pr-workflow/SKILL.md`.
 
 #### A.16 Control de Backlog al Superar 10 Tareas en `/sdd-change` (Hallazgo 8)
 - **Problema**: Si la suma de tareas completadas más las nuevas en un cambio de alcance en vuelo sobrepasa el límite de 10 tareas, no se especifica el tratamiento.
@@ -223,10 +223,10 @@ Los hallazgos se estructuran en dos categorías operativas:
 - **Problema**: El flujo TDD asume ejecuciones inmediatas; no contempla servicios externos locales (bases de datos en Docker, colas) ni pruebas no deterministas (*flaky tests*).
 - **Causa Raíz**: Modelado simplista de pruebas unitarias puras.
 - **Solución Técnica**:
-  En `workflows/sdd-plan.md` y `skills/methodology/test-driven-development/SKILL.md`:
+  En `workflows/sdd-plan.md` y `skills/test-driven-development/SKILL.md`:
   1. Exigir que las pruebas unitarias TDD utilicen mocks o stubs in-memory sin dependencias de red o demonios.
   2. Si se requieren servicios locales (Docker), incluir en `plan.md` la sección `Dependencias de Runtime de Testing` y verificar su disponibilidad (`docker compose ps`) antes de invocar los tests de integración.
-- **Archivos Afectados**: `workflows/sdd-plan.md`, `skills/methodology/test-driven-development/SKILL.md`.
+- **Archivos Afectados**: `workflows/sdd-plan.md`, `skills/test-driven-development/SKILL.md`.
 
 #### A.19 Protocolo ante Caída Abrupta o Timeout de Subagentes (Hallazgo 2)
 - **Problema**: Si un subagente en Antigravity o OpenCode cae por OOM o timeout, el coordinador puede quedar en espera indeterminada.
@@ -455,7 +455,7 @@ Para dar estricto cumplimiento al estándar SDD (máximo 10 tareas atómicas con
   *Hecho cuando*: `review-and-pr.md` define taxativamente qué es un conflicto trivial, `sdd-status.md` incluye el árbol de 3 niveles de resolución, y `sdd-tasks.md` define operativamente los 20-30 min.
 - [x] **T9: Formalizar gestión de excepciones (timeout/caída de subagentes), variables de entorno (.env) y pruebas asíncronas**  
   *Hecho cuando*: `coordinator.md`, `sdd-implement.md` y `sdd-plan.md` contienen los protocolos de recuperación ante caídas, mockeo de entorno y aislamiento de dependencias locales.
-- [ ] **T10: Aplicar las resoluciones de la Categoría B aprobadas por el usuario**  
+- [x] **T10: Aplicar las resoluciones de la Categoría B aprobadas por el usuario**  
   *Hecho cuando*: Se aplican en el repositorio las elecciones confirmadas por el usuario para la ubicación del arnés, aplanamiento de skills, política de push previo a CI y modo autónomo.
 
 ---
