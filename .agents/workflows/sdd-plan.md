@@ -46,7 +46,7 @@ Para garantizar tareas atómicas (~20-30 min) y evitar specs monstruosas:
 
 ## Fase 3: Redacción de `specs/NNN-nombre/plan.md`
 
-Utilizando la plantilla `templates/specs/plan.md.template`, redacta el documento técnico con las siguientes secciones:
+Utilizando la plantilla `.agents/templates/specs/plan.md.template` (o `.agent/templates/specs/plan.md.template`), redacta el documento técnico con las siguientes secciones:
 
 ```markdown
 # Plan Técnico NNN: [Nombre de la Feature]

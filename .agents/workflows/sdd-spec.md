@@ -81,7 +81,7 @@ El Coordinador (o `@planner`) entrevista al usuario mediante preguntas directas 
 
 ## Fase 4: Redacción de `specs/NNN-slug/spec.md`
 
-`@planner` genera el archivo `specs/NNN-slug/spec.md` utilizando la plantilla `templates/specs/spec.md.template`.
+`@planner` genera el archivo `specs/NNN-slug/spec.md` utilizando la plantilla `.agents/templates/specs/spec.md.template` (o `.agent/templates/specs/spec.md.template`).
 
 ### Reglas Estrictas de Redacción:
 1. **Sintaxis Formal EARS en Español para Requerimientos Funcionales**:

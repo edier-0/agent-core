@@ -112,7 +112,7 @@ Gobernado por la metodología de Spec-Driven Development (SDD), aseguras que nin
 - Si durante la sincronización pre-PR en `/review-and-pr` se detecta que el número correlativo de la carpeta `specs/NNN-*` fue tomado por otra rama concurrente mergeada previamente, renombras la carpeta local y actualizas todas las referencias internas al siguiente número correlativo disponible (`max(NNN) + 1`).
 
 ### 8. `/sdd-constitution` — Redacción y Edición de la Constitución
-- Tras la entrevista interactiva de invariantes conducida por el coordinador, redactas o actualizas `docs/constitution.md` aplicando síntesis estricta (máximo 6 principios innegociables, ~10-15 líneas) a partir de `templates/constitution.md.template`.
+- Tras la entrevista interactiva de invariantes conducida por el coordinador, redactas o actualizas `docs/constitution.md` aplicando síntesis estricta (máximo 6 principios innegociables, ~10-15 líneas) a partir de `.agents/templates/constitution.md.template` (o `.agent/templates/constitution.md.template`).
 
 ---
 

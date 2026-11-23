@@ -84,7 +84,7 @@ La mayoría de los agentes de Inteligencia Artificial (como Claude Code, Cursor,
 
 ### El Modelo Fábrica-Instalador
 `agent-core` opera bajo una distinción arquitectónica fundamental:
-- **En este repositorio fuente (`agent-core`)**: Opera como la **fábrica maestra**. Sus componentes maestros residen directamente en la raíz (`agents/`, `workflows/`, `skills/`, `templates/`, `mcp/`), permitiendo su desarrollo, versionado y empaquetado como framework independiente.
+- **En este repositorio fuente (`agent-core`)**: Opera como la **fábrica maestra**. Sus componentes maestros residen unificados dentro de `.agents/` (`.agents/agents/`, `.agents/workflows/`, `.agents/skills/`, `.agents/templates/`, `.agents/mcp/`) bajo el principio de **Cero Basura en la Raíz**, permitiendo su desarrollo, versionado y empaquetado como framework independiente.
 - **En proyectos cliente destino (`/init` o `/adopt`)**: Opera como el **instalador portátil**. Empaqueta e instala todo el arnés estrictamente dentro de `.agent/` bajo el principio innegociable de **Contenedor Limpio y Cero Basura en Raíz**, dejando la raíz del proyecto cliente 100% libre para el código de la aplicación del usuario (`src/`, `package.json`, etc.).
 
 ---
@@ -202,7 +202,7 @@ Sigue ESTRICTAMENTE este protocolo en orden:
    - Revisa si existen en la raíz o en docs/ los siguientes archivos: `AGENTS.md`, `MEMORY.md`, `docs/constitution.md`.
    - CASO A: REPOSITORIO NUEVO (DÍA 0 - No existen `AGENTS.md` ni `constitution.md`):
      - Tu primera tarea es ejecutar el proceso de inicialización (Bootstrap).
-     - Consulta la plantilla y guía en `.agent/workflows/init.md` (o `workflows/init.md` si estás dentro de agent-core).
+     - Consulta la plantilla y guía en `.agent/workflows/init.md` (o `.agents/workflows/init.md` si estás dentro de agent-core).
      - Conduce la entrevista técnica minuciosa al usuario mediante tarjetas de selección interactiva (Framework de los 8 Ejes: Dominio/Roles, Stack/Runtimes, Arquitectura/Modularidad, Base de Datos/Persistencia, Seguridad/DevSecOps, Testing/TDD, Docker/Infraestructura y Gobernanza Git), presentando opciones fundamentadas objetivamente con la recomendada de primero y opción abierta para redactar otra respuesta libre.
      - Genera los archivos fundacionales del repositorio:
        * `AGENTS.md` (resumen conciso de stack, comandos y límites innegociables de ~30-40 líneas).
@@ -361,68 +361,75 @@ Cuando un proyecto comienza desde cero (Día 0 / Greenfield), `agent-core` ejecu
 
 ```text
 agent-core/
-├── agents/                       # 4 Subagentes especializados portables
-│   ├── coordinator.md            # Orquestador del ciclo SDD (shell: deny, edit: deny)
-│   ├── planner.md                # Arquitecto (specs/** allow, MEMORY.md allow, shell: deny)
-│   ├── implementer.md            # Artesano TDD (src/** allow, shell: allow)
-│   └── reviewer.md               # Auditor QA (edit: deny, shell: read-only)
+├── .agents/                      # Fuente canónica única del arnés portable
+│   ├── agents/                   # 4 Subagentes especializados portables
+│   │   ├── coordinator.md        # Orquestador del ciclo SDD (shell: deny, edit: deny)
+│   │   ├── planner.md            # Arquitecto (specs/** allow, MEMORY.md allow, shell: deny)
+│   │   ├── implementer.md        # Artesano TDD (src/** allow, shell: allow)
+│   │   └── reviewer.md           # Auditor QA (edit: deny, shell: read-only)
+│   │
+│   ├── workflows/                # 12 Workflows ejecutables / Comandos slash
+│   │   ├── init.md               # Bootstrap del repositorio (Día 0 o actualización no destructiva)
+│   │   ├── adopt.md              # Auto-adopción y generación de conectores nativos por agente
+│   │   ├── sdd-constitution.md   # Creación y auditoría de docs/constitution.md
+│   │   ├── sdd-spec.md           # Captura de requerimientos, árbol limpio y rama temática
+│   │   ├── sdd-clarify.md        # QA funcional con @reviewer [MODO: CLARIFICACION_SPEC]
+│   │   ├── sdd-plan.md           # Arquitectura técnica, contratos y límite de 10 tareas
+│   │   ├── sdd-tasks.md          # Desglose en tareas atómicas (~20-30 min) y checkpoints
+│   │   ├── sdd-implement.md      # Implementación atómica bajo ciclo TDD Red-Green-Refactor
+│   │   ├── sdd-validate.md       # Validación integral con @reviewer [MODO: VALIDACION_IMPLEMENTACION]
+│   │   ├── sdd-change.md         # Modificación de alcance en vuelo aditiva y controlada
+│   │   ├── sdd-status.md         # Consulta de máquina de estados y archivado de canceladas
+│   │   └── review-and-pr.md      # Sincronización, rebase, PR en 3 niveles y eliminación autorizada
+│   │
+│   ├── skills/                   # Batería de 27 skills aplanadas (.agents/skills/<nombre>/SKILL.md)
+│   │   │                         # Clasificación semántica por metadato YAML (category: <categoria>)
+│   │   ├── api-and-interface-design/ # (category: architecture) REST y contratos de interfaz
+│   │   ├── browser-testing-with-devtools/ # (category: frontend) Verificación interactiva Chrome DevTools
+│   │   ├── ci-cd-and-automation/ # (category: delivery) Pipelines y compuertas CI
+│   │   ├── code-review-and-quality/  # (category: quality) Auditoría multidimensional
+│   │   ├── code-simplification/  # (category: quality) Reducción de complejidad
+│   │   ├── constraint-driven-development/ # (category: methodology) Barras de calidad e invariantes
+│   │   ├── context-engineering/  # (category: architecture) Gestión óptima de contexto
+│   │   ├── debugging-and-error-recovery/ # (category: quality) Triaje sistemático de causa raíz
+│   │   ├── deprecation-and-migration/# (category: quality) Migraciones de BD y retiro seguro
+│   │   ├── devsecops/            # (category: delivery) Blindaje de secretos y dependencias
+│   │   ├── docker-hardening/     # (category: delivery) Contenedores seguros multi-stage
+│   │   ├── documentation-and-adrs/   # (category: architecture) Registro de ADRs y memoria
+│   │   ├── doubt-driven-development/ # (category: methodology) Examen adversarial de decisiones
+│   │   ├── frontend-ui-engineering/  # (category: frontend) UIs profesionales y accesibles
+│   │   ├── git-pr-workflow/      # (category: delivery) Control de versiones y ramas
+│   │   ├── idea-refine/          # (category: methodology) Refinamiento de conceptos
+│   │   ├── incremental-implementation/# (category: architecture) Rebanadas verticales delgadas
+│   │   ├── interview-me/         # (category: methodology) Entrevista socrática de requerimientos
+│   │   ├── observability-and-instrumentation/# (category: architecture) Logs JSON y métricas
+│   │   ├── performance-optimization/ # (category: architecture) Erradicación de N+1 y profiling
+│   │   ├── planning-and-task-breakdown/# (category: methodology) Desglose de tareas (plan.md / tasks.md)
+│   │   ├── sdd/                  # (category: methodology) Guía canónica Spec-Driven Development
+│   │   ├── shipping-and-launch/  # (category: delivery) Listas de verificación pre-lanzamiento
+│   │   ├── source-driven-development/# (category: methodology) Fundamentación en docs oficiales
+│   │   ├── test-driven-development/  # (category: methodology) Ciclo TDD Red-Green-Refactor
+│   │   ├── ui-ux-pro-max/        # (category: frontend) Catálogo UI/UX y sistema de diseño
+│   │   └── using-agent-skills/   # (category: router) Enrutador y meta-skill maestro
+│   │
+│   ├── templates/                # 13 Plantillas universales y adaptadores por plataforma
+│   │   ├── AGENTS.md.template    # Resumen conciso de stack y reglas (~30-40 líneas)
+│   │   ├── AGENTS-monorepo-root.template
+│   │   ├── AGENTS-monorepo-module.template
+│   │   ├── MEMORY.md.template    # Memoria viva de decisiones y aprendizajes (~50 líneas)
+│   │   ├── MEMORY-module.template
+│   │   ├── constitution.md.template # Principios supremos innegociables (máx 6 principios)
+│   │   ├── adapters/             # Adaptadores nativos (CLAUDE.md, CODEX.md, opencode.json, etc.)
+│   │   └── specs/                # Plantillas para spec.md (EARS), plan.md y tasks.md
+│   │
+│   └── mcp/                      # Catálogo y configuración de MCPs recomendados
+│       └── recommended-mcps.md   # GitHub, Context7, Chrome DevTools y degradación en 3 niveles
 │
-├── workflows/                    # 12 Workflows ejecutables / Comandos slash
-│   ├── init.md                   # Bootstrap del repositorio (Día 0 o actualización no destructiva)
-│   ├── adopt.md                  # Auto-adopción y generación de conectores nativos por agente
-│   ├── sdd-constitution.md       # Creación y auditoría de docs/constitution.md
-│   ├── sdd-spec.md               # Captura de requerimientos, árbol limpio y rama temática
-│   ├── sdd-clarify.md            # QA funcional con @reviewer [MODO: CLARIFICACION_SPEC]
-│   ├── sdd-plan.md               # Arquitectura técnica, contratos y límite de 10 tareas
-│   ├── sdd-tasks.md              # Desglose en tareas atómicas (~20-30 min) y checkpoints
-│   ├── sdd-implement.md          # Implementación atómica bajo ciclo TDD Red-Green-Refactor
-│   ├── sdd-validate.md           # Validación integral con @reviewer [MODO: VALIDACION_IMPLEMENTACION]
-│   ├── sdd-change.md             # Modificación de alcance en vuelo aditiva y controlada
-│   ├── sdd-status.md             # Consulta de máquina de estados y archivado de canceladas
-│   └── review-and-pr.md          # Sincronización, rebase, PR en 3 niveles y eliminación autorizada
-│
-├── skills/                       # Batería de 27 skills aplanadas (primer nivel skills/<nombre>/SKILL.md)
-│   │                             # Clasificación semántica por metadato YAML (category: <categoria>)
-│   ├── api-and-interface-design/ # (category: architecture) REST y contratos de interfaz
-│   ├── browser-testing-with-devtools/ # (category: frontend) Verificación interactiva Chrome DevTools
-│   ├── ci-cd-and-automation/     # (category: delivery) Pipelines y compuertas CI
-│   ├── code-review-and-quality/  # (category: quality) Auditoría multidimensional
-│   ├── code-simplification/      # (category: quality) Reducción de complejidad
-│   ├── constraint-driven-development/ # (category: methodology) Barras de calidad e invariantes
-│   ├── context-engineering/      # (category: architecture) Gestión óptima de contexto
-│   ├── debugging-and-error-recovery/ # (category: quality) Triaje sistemático de causa raíz
-│   ├── deprecation-and-migration/# (category: quality) Migraciones de BD y retiro seguro
-│   ├── devsecops/                # (category: delivery) Blindaje de secretos y dependencias
-│   ├── docker-hardening/         # (category: delivery) Contenedores seguros multi-stage
-│   ├── documentation-and-adrs/   # (category: architecture) Registro de ADRs y memoria
-│   ├── doubt-driven-development/ # (category: methodology) Examen adversarial de decisiones
-│   ├── frontend-ui-engineering/  # (category: frontend) UIs profesionales y accesibles
-│   ├── git-pr-workflow/          # (category: delivery) Control de versiones y ramas
-│   ├── idea-refine/              # (category: methodology) Refinamiento de conceptos
-│   ├── incremental-implementation/# (category: architecture) Rebanadas verticales delgadas
-│   ├── interview-me/             # (category: methodology) Entrevista socrática de requerimientos
-│   ├── observability-and-instrumentation/# (category: architecture) Logs JSON y métricas
-│   ├── performance-optimization/ # (category: architecture) Erradicación de N+1 y profiling
-│   ├── planning-and-task-breakdown/# (category: methodology) Desglose de tareas (plan.md / tasks.md)
-│   ├── sdd/                      # (category: methodology) Guía canónica Spec-Driven Development
-│   ├── shipping-and-launch/      # (category: delivery) Listas de verificación pre-lanzamiento
-│   ├── source-driven-development/# (category: methodology) Fundamentación en docs oficiales
-│   ├── test-driven-development/  # (category: methodology) Ciclo TDD Red-Green-Refactor
-│   ├── ui-ux-pro-max/            # (category: frontend) Catálogo UI/UX y sistema de diseño
-│   └── using-agent-skills/       # (category: router) Enrutador y meta-skill maestro
-│
-├── templates/                    # 13 Plantillas universales y adaptadores por plataforma
-│   ├── AGENTS.md.template        # Resumen conciso de stack y reglas (~30-40 líneas)
-│   ├── AGENTS-monorepo-root.template
-│   ├── AGENTS-monorepo-module.template
-│   ├── MEMORY.md.template        # Memoria viva de decisiones y aprendizajes (~50 líneas)
-│   ├── MEMORY-module.template
-│   ├── constitution.md.template # Principios supremos innegociables (máx 6 principios)
-│   ├── adapters/                 # Adaptadores nativos (CLAUDE.md, CODEX.md, opencode.json, etc.)
-│   └── specs/                    # Plantillas para spec.md (EARS), plan.md y tasks.md
-│
-└── mcp/                          # Catálogo y configuración de MCPs recomendados
-    └── recommended-mcps.md       # GitHub, Context7, Chrome DevTools y degradación en 3 niveles
+├── specs/                        # Especificaciones activas e histórico SDD (specs/NNN-nombre/)
+├── AGENTS.md                     # Directivas de orquestación, gobernanza y reglas de dominio
+├── README.md                     # Documentación y manual exhaustivo del framework
+├── plan.md                       # Plan maestro de arquitectura y tareas de agent-core
+└── .gitignore                    # Reglas de exclusión de Git
 ```
 
 ---

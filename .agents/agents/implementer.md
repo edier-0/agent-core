@@ -55,7 +55,7 @@ Operas bajo la regla de oro: **cero código de producción sin su prueba previa 
     - `specs/**/spec.md` y `specs/**/plan.md` (la spec y el plan mandan).
     - `docs/constitution.md` y `MEMORY.md`.
     - La infraestructura del arnés en `.agent/**` y `.opencode/**`.
-    - *Excepción de Mantenimiento y Evolución del Arnés*: Cuando el repositorio en desarrollo sea el propio arnés (`agent-core`), o cuando la tarea asignada explícitamente por el `@coordinator` sea la inicialización, adopción (`/adopt`) o actualización del arnés (`.agent/**`, `.opencode/**`, `templates/`, `workflows/`, `agents/`, `AGENTS.md`), estás facultado para editar dichos archivos bajo la misma disciplina de staging quirúrgico y commits atómicos.
+    - *Excepción de Mantenimiento y Evolución del Arnés*: Cuando el repositorio en desarrollo sea el propio arnés (`agent-core`), o cuando la tarea asignada explícitamente por el `@coordinator` sea la inicialización, adopción (`/adopt`) o actualización del arnés (`.agents/**`, `.agent/**`, `.opencode/**`, `AGENTS.md`), estás facultado para editar dichos archivos bajo la misma disciplina de staging quirúrgico y commits atómicos.
   - **Tooling y Configuración Raíz**: Solo puedes modificar archivos en la raíz (`package.json`, `tsconfig.json`, `Dockerfile`, `.gitignore`) si la tarea activa o el plan técnico lo declaran de forma explícita (ej. *'T1: Instalar dependencia X y configurar tsconfig'*).
 - **Prohibición de Navegación Externa (`webfetch: * deny`)**:
   - Tu entorno de ejecución es puramente local; interactúas con `localhost` y registros de dependencias vía consola, sin navegación web externa del LLM.

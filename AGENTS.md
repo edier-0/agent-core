@@ -5,9 +5,9 @@ Software Factory Portátil y Arnés de Ingeniería de Software para Agentes de I
 ## Stack y Estructura
 - **Tecnologías**: Arnés agnóstico basado en Markdown, YAML, JSON, Bash/PowerShell y Model Context Protocol (MCP).
 - **Arquitectura y Modelo Fábrica-Instalador**:
-  - En este repositorio fuente (`agent-core`), los componentes maestros residen directamente en la raíz (`agents/`, `workflows/`, `skills/`, `templates/`, `mcp/`).
+  - En este repositorio fuente (`agent-core`), los componentes maestros residen unificados dentro de `.agents/` (`.agents/agents/`, `.agents/workflows/`, `.agents/skills/`, `.agents/templates/`, `.agents/mcp/`) bajo el principio de "Cero Basura en la Raíz".
   - En proyectos cliente destino (`/init` o `/adopt`), el arnés se empaqueta e instala estrictamente dentro de `.agent/` ("Cero Basura en la Raíz").
-- **Rutas Clave**: Código y arnés en raíz (`agents/`, `skills/`, `workflows/`), especificaciones en `specs/`, adaptadores en `templates/`.
+- **Rutas Clave**: Código y arnés unificados en `.agents/` (`.agents/agents/`, `.agents/skills/`, `.agents/workflows/`, `.agents/mcp/`), especificaciones en `specs/`, adaptadores y plantillas en `.agents/templates/`.
 
 ## Configuración de Git y Flujo de Trabajo
 - `GIT_WORKFLOW_MODE`: "branch_pr"

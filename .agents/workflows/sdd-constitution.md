@@ -32,7 +32,7 @@ El **`@coordinator`** conduce la entrevista interactiva de invariantes y delega 
    - Invariantes de persistencia y base de datos (`(Recommended) Esquemas reversibles y migraciones idempotentes no destructivas`, `Ajustes directos permitidos`).
    - Modularidad y acoplamiento (`(Recommended) Módulos desacoplados que solo se comunican por contratos públicos`, `Acceso directo entre capas`).
 2. **Redacción y Escritura del Borrador**:
-   El `@coordinator` despacha a `@planner`, quien a partir de `templates/constitution.md.template` redacta y escribe el borrador en `docs/constitution.md` con la siguiente estructura:
+   El `@coordinator` despacha a `@planner`, quien a partir de `.agents/templates/constitution.md.template` (o `.agent/templates/constitution.md.template`) redacta y escribe el borrador en `docs/constitution.md` con la siguiente estructura:
    ```markdown
    # docs/constitution.md — Constitución Técnica del Proyecto
 

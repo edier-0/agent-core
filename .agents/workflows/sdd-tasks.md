@@ -43,7 +43,7 @@ Este workflow toma el plan técnico aprobado y genera la lista secuencial de tar
 
 ## Fase 1: Redacción de `specs/NNN-nombre/tasks.md`
 
-Utilizando la plantilla `templates/specs/tasks.md.template`, redacta el archivo con la siguiente estructura:
+Utilizando la plantilla `.agents/templates/specs/tasks.md.template` (o `.agent/templates/specs/tasks.md.template`), redacta el archivo con la siguiente estructura:
 
 ```markdown
 # Tareas de Implementación NNN: [Nombre de la Feature]
