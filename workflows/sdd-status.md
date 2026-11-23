@@ -24,14 +24,15 @@ Toda consulta o mutación del repositorio mediante comandos de consola Git (`git
 
 El `@coordinator` determina la especificación activa siguiendo un árbol de decisión estricto de 3 niveles:
 
-1. **Nivel 1 (Rama Git Activa)**:
-   - Si la rama actual coincide con el patrón `feature/NNN-slug` (o `fix/NNN-slug`), la spec activa es inequívocamente `specs/NNN-slug/`.
-2. **Nivel 2 (Estado en Metadatos de Specs)**:
-   - Si se opera en `main`, `develop` o una rama genérica, escanea todas las carpetas en `specs/` y revisa el encabezado de cada `spec.md`.
-   - Si existe **exactamente una spec** con `- **Estado**: en_progreso` (o `planificada`), se selecciona automáticamente dicha spec.
-3. **Nivel 3 (Ambigüedad o Ausencia)**:
-   - Si se detectan múltiples specs en progreso o ninguna, no asumir ninguna por defecto.
-   - Presenta al usuario una tarjeta interactiva (`ask_question` o menú estructurado) listando las specs encontradas con su estado actual para que el usuario elija explícitamente sobre cuál desea operar.
+1. **Nivel 1 (Rama Git Activa en modo `branch_pr`)**:
+   - Si la rama actual coincide con el patrón `feature/NNN-slug` (o `fix/NNN-slug`, `chore/NNN-slug`, `refactor/NNN-slug`), la spec activa es inequívocamente `specs/NNN-slug/`.
+2. **Nivel 2 (Inferencia en Modo `trunk` o Ramas Base sin Rama Temática)**:
+   - Si se opera en modo `trunk` (o sobre ramas base como `main` o `develop` sin rama temática activa), escanea todas las carpetas en `specs/` inspeccionando el encabezado de cada `spec.md`.
+   - Busca specs activas en estado no terminal priorizando aquellas cuyo encabezado declare `- **Estado**: en_progreso` o `- **Estado**: clarificada` (así como `planificada` o `borrador`).
+   - Si existe **exactamente una spec** activa en dicho estado no terminal (`en_progreso` o `clarificada`), se selecciona automáticamente dicha spec sin requerir confirmación interactiva adicional.
+3. **Nivel 3 (Ambigüedad o Ausencia: Tarjeta Interactiva `ask_question`)**:
+   - Si se detecta más de una spec no terminal (o ninguna spec activa), queda terminantemente prohibido asumir una por defecto.
+   - Formula obligatoriamente una tarjeta de selección interactiva mediante `ask_question` listando todas las specs no terminales encontradas junto con su estado actual (con la opción más reciente o avanzada marcada como recomendada), permitiendo al usuario seleccionar inequívocamente sobre cuál operar.
 
 *(Para determinar la rama Git actual en plataformas multiagente, el `@coordinator` despacha una consulta de lectura no destructiva a `@implementer` si no cuenta con dicha información en su contexto)*.
 

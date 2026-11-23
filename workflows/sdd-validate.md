@@ -80,7 +80,7 @@ Discrepancias detectadas:
    # git reset --hard origin/main
    ```
 2. **Restauración de Dependencias**: Si se modificaron dependencias, `@implementer` corre `PKG_RESTORE_COMMAND` (ej. `npm install` o `pip install -r`).
-3. **Alerta de Base de Datos**: Si hubo migraciones, alerta al usuario para que revierta su base de datos local según su flujo habitual (sin ejecutar comandos destructivos automatizados).
+3. **Política de Seguridad Estricta en Base de Datos**: Si la spec incluyó migraciones o mutaciones en esquemas de bases de datos, ante la reversión de código el arnés **SE DETIENE OBLIGATORIAMENTE** y emite una alerta asistida detallando al usuario las migraciones que fueron aplicadas durante la implementación. Queda **taxativamente prohibido ejecutar comandos de rollback destructivos o mutaciones automatizadas en la base de datos** (ej. `drop`, `migrate down`, `reset db`) por parte de los agentes. La reversión o ajuste del estado de la base de datos debe ser gestionada exclusivamente por el usuario humano de forma manual y consciente según sus procedimientos habituales.
 
 ---
 
@@ -105,5 +105,6 @@ La implementación cumple íntegramente los requerimientos funcionales, contrato
        ```
      - Sugiere proceder con la apertura del Pull Request:
        > *"✅ Feature validada y lista para integración. Para sincronizar la rama base, abrir el PR y gestionar el merge, ejecuta `/review-and-pr`."*
-   - **Si el usuario rechaza por desajuste menor**: El Coordinador reasigna a `@implementer` con el feedback puntual bajo TDD.
-   - **Si el usuario rechaza por nuevos requerimientos**: Se detiene la validación y se invoca `/sdd-change` para reformular el alcance.
+   - **Criterio Objetivo de Contrato: Desajuste Menor vs. Cambio de Alcance**:
+     - **Desajuste Menor**: Afecta < 1 archivo, < 30 líneas netas de código, y **NO** altera contratos públicos, interfaces, requerimientos funcionales (RF) ni esquemas de base de datos. El Coordinador reasigna directamente a `@implementer` con el feedback puntual bajo el ciclo estricto de TDD (Rojo -> Verde -> Refactor).
+     - **Cambio de Alcance**: Altera contratos públicos, añade o modifica requerimientos funcionales (RF) o modifica esquemas de base de datos. Requiere **obligatoriamente detenerse** e invocar `/sdd-change` con `@planner` para reformular el alcance, actualizar la especificación formal y someterla a nueva clarificación.

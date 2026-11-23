@@ -27,6 +27,8 @@ Protocolo canónico de control de versiones, compuertas de calidad y ciclo de vi
      - `chore/<NNN-nombre>`: Mantenimiento, dependencias o tooling.
      - `refactor/<NNN-nombre>`: Reestructuración de código sin alterar comportamiento.
      - `docs/<NNN-nombre>`: Documentación, especificaciones SDD o constitución.
+   - **Numeración Correlativa Global Única (`NNN = max(NNN) + 1`)**:
+     El cálculo del identificador correlativo `NNN` es unívoco y global para todo el repositorio en `specs/`, compartido transversalmente sin importar el prefijo semántico (`feature/`, `fix/`, `chore/`, `refactor/`, etc.). Cada nueva spec toma `max(NNN) + 1` del conjunto completo de carpetas existentes en `specs/`, eliminando colisiones en el árbol de trabajo.
 4. **Prohibición de Merges Locales a Ramas Base**:
    - La rama base local nunca recibe merges manuales directos de la rama temática de trabajo. El Pull Request en remoto es el único mecanismo autorizado de integración.
 5. **Protocolo Estricto de Puntos de Control Humanos**:

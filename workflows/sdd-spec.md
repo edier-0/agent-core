@@ -44,10 +44,11 @@ Toda inspección del árbol y ejecución de comandos de consola de Git (`git sta
 
 ## Fase 2: Determinación de Número, Slug y Rama Temática
 
-1. **Cálculo del Número de Spec**:
-   - Escanea la carpeta `specs/` en la raíz del proyecto.
-   - Si existen carpetas como `001-auth` y `002-pagos`, calcula `NNN = 003`.
-   - Si el usuario suministró un número en el comando, respeta la anulación manual.
+1. **Cálculo de Numeración Correlativa Global Única (`NNN = max(NNN) + 1`)**:
+   - Escanea exhaustivamente todas las carpetas en `specs/` en la raíz del proyecto (`specs/NNN-*`).
+   - El cálculo del correlativo `NNN = max(NNN) + 1` es **unívoco y global para todo el repositorio**, compartido transversalmente independientemente del prefijo semántico de la rama (`feature/`, `fix/`, `chore/`, `refactor/`, `docs/`, `test/`).
+   - Ejemplo: si existen `specs/001-auth` (rama `feature/001-auth`) y `specs/002-fix-login` (rama `fix/002-fix-login`), la siguiente spec será `003` (sea `feature/`, `fix/`, `chore/` o `refactor/`), eliminando taxativamente cualquier colisión o fragmentación de numeración en el directorio `specs/`.
+   - Si el usuario suministró un número explícito en el comando, respeta la anulación manual tras verificar que no colisione con una carpeta ya existente en `specs/`.
 2. **Sanitización del Slug de la Rama**:
    - Toma el nombre descriptivo y normaliza estrictamente a *kebab-case*:
      - Convertir a minúsculas.

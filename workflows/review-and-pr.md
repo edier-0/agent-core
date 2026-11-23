@@ -72,23 +72,26 @@ Una vez rebasada y sincronizada limpiamente en local:
 
 ---
 
-## Fase 4: Apertura del Pull Request (Estrategia en 3 Niveles)
+## Fase 4: Apertura del Pull Request (Estrategia en 3 Niveles con Comprobación Pasiva)
 
-El sistema intenta abrir el Pull Request utilizando la mejor herramienta disponible:
+El sistema intenta abrir el Pull Request utilizando la mejor herramienta disponible bajo un protocolo estricto de comprobación pasiva previa que previene excepciones y bloqueos interactivos:
 
 1. **Nivel 1: Servidor GitHub MCP (Nativo del `@coordinator`)**:
-   - Si el servidor MCP `github` está disponible y autenticado en el coordinador, invoca la herramienta `create_pull_request`:
+   - **Comprobación Pasiva Previa**: El `@coordinator` verifica de forma pasiva si el servidor MCP `github` está disponible y con token activo configurado. Si el token no está configurado o el servidor MCP no responde, no lanza excepciones ni interrumpe el flujo; degrada de inmediato al Nivel 2.
+   - Si está disponible y autenticado, invoca la herramienta `create_pull_request`:
      - Base: `<base_branch>` (ej. `develop` o `main`).
      - Head: `<tipo>/<NNN-slug>`.
      - Título: `<tipo>(<NNN>): <nombre descriptivo de la feature>`.
      - Cuerpo: Resumen de requerimientos funcionales, criterios de aceptación, comandos de verificación y referencia a `specs/NNN-slug/spec.md`.
 2. **Nivel 2: GitHub CLI (`gh`) (Delegado a `@implementer`)**:
-   - Si no hay servidor MCP activo pero `gh` está instalado en la consola del sistema, el coordinador despacha a `@implementer`:
+   - **Comprobación Pasiva Previa**: El `@coordinator` despacha a `@implementer` para ejecutar una comprobación pasiva de autenticación con `gh auth status`.
+   - Si `gh` no está instalado en el sistema o `gh auth status` falla (no autenticado / token expirado), **NO** se lanzan excepciones ni se abren prompts interactivos bloqueantes (prohibido lanzar comandos interactivos como `gh auth login`). El arnés degrada automática e inmediatamente al Nivel 3.
+   - Si `gh auth status` es exitoso, el coordinador despacha a `@implementer` para abrir el PR:
      ```bash
      gh pr create --base <base_branch> --head <tipo>/<NNN-slug> --title "<tipo>(<NNN>): <nombre>" --body "<resumen>"
      ```
-3. **Nivel 3: Enlace Web Directo (Degradación Manual Asistida)**:
-   - Si no hay MCP ni CLI disponible, el coordinador genera e imprime la URL de apertura en el navegador:
+3. **Nivel 3: Enlace Web Directo (Degradación Asistida No Bloqueante)**:
+   - Si no hay MCP autenticado ni sesión activa en CLI, el coordinador genera e imprime la URL de apertura directa en el navegador:
      ```
      https://github.com/<owner>/<repo>/compare/<base_branch>...<tipo>/<NNN-slug>?expand=1
      ```
