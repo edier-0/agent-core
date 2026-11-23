@@ -26,18 +26,21 @@ Opera bajo la política **Local-First (Offline)** y el principio de **Cero Basur
 
 Antes de cualquier entrevista o generación de archivos, el `@coordinator` analiza la estructura del directorio actual y despacha a `@implementer` para ejecutar la reorganización física requerida:
 
-#### Escenario 1: Clonado Directo de `agent-core` (Árbol Expuesto en la Raíz)
-Si el repositorio actual contiene carpetas como `agents/`, `workflows/`, `skills/`, `templates/` o `mcp/` expuestas directamente en la raíz:
-1. **Reorganización Automática hacia `.agent/`**:
-   - Crea el contenedor canónico `.agent/`.
-   - Mueve `agents/` $\rightarrow$ `.agent/agents/`.
-   - Mueve `workflows/` $\rightarrow$ `.agent/workflows/`.
-   - Mueve `skills/` $\rightarrow$ `.agent/skills/`.
-   - Mueve `mcp/` $\rightarrow$ `.agent/mcp/`.
-   - Mueve `templates/` $\rightarrow$ `.agent/templates/`.
+#### Escenario 1: Clonado Directo de `agent-core` (Presencia de `.agents/` o Árbol Expuesto en la Raíz)
+Si el repositorio actual fue clonado directamente desde `agent-core`:
+1. **Normalización hacia `.agent/` (Cero Basura en la Raíz)**:
+   - **Si existe `.agents/` en la raíz**:
+     - Crea el contenedor canónico `.agent/` si no existe.
+     - Normaliza o traslada los componentes de `.agents/*` $\rightarrow$ `.agent/*` (o preserva canónicamente `.agents/` si la plataforma cliente lo requiere como Antigravity).
+   - **Si existen carpetas legacy sueltas (`agents/`, `workflows/`, `skills/`, `templates/`, `mcp/`) en la raíz**:
+     - Mueve `agents/` $\rightarrow$ `.agent/agents/`.
+     - Mueve `workflows/` $\rightarrow$ `.agent/workflows/`.
+     - Mueve `skills/` $\rightarrow$ `.agent/skills/`.
+     - Mueve `templates/` $\rightarrow$ `.agent/templates/`.
+     - Mueve `mcp/` $\rightarrow$ `.agent/mcp/`.
 2. **Tratamiento de `README.md` de `agent-core`**:
-   - Si el `README.md` en la raíz corresponde a la documentación de `agent-core`, muévelo a `.agent/README.md`.
-   - Esto preserva el manual del arnés completo dentro de `.agent/` para consulta offline y libera la raíz para el `README.md` propio de la aplicación del usuario.
+   - Si el `README.md` en la raíz contiene la firma determinista `<!-- AGENT-CORE-ROOT-README -->` o corresponde al manual de la fábrica de `agent-core`, muévelo a `.agent/README.md`.
+   - Esto preserva el manual del arnés completo dentro de `.agent/` para consulta offline y libera la raíz para inicializar el `README.md` propio de la aplicación del usuario.
 3. **Tratamiento de `plan.md` de `agent-core`**:
    - Si existe `plan.md` en la raíz (plan interno de construcción de `agent-core`), muévelo a `.agent/docs/history/agent-core-plan.md`.
    - La raíz no debe contener un `plan.md` huérfano, ya que las características del proyecto se gestionarán exclusivamente dentro de `specs/NNN-nombre/plan.md`.
@@ -45,13 +48,13 @@ Si el repositorio actual contiene carpetas como `agents/`, `workflows/`, `skills
 
 #### Escenario 2: Instalación desde Fuente Externa (`/init --source <ruta>` o `~/.agent-core`)
 Si se ejecuta en un proyecto destino independiente:
-1. Copia directamente desde la fuente hacia `.agent/`:
-   - `.agent/agents/`
-   - `.agent/workflows/`
-   - `.agent/skills/`
-   - `.agent/mcp/`
-   - `.agent/templates/`
-   - `.agent/README.md` (como documentación del arnés)
+1. Copia directamente desde la estructura `.agents/` (o `.agent/`) de la fuente hacia `.agent/` del cliente:
+   - `<fuente>/.agents/agents/*` (o `<fuente>/.agent/agents/*`) $\rightarrow$ `.agent/agents/`
+   - `<fuente>/.agents/workflows/*` $\rightarrow$ `.agent/workflows/`
+   - `<fuente>/.agents/skills/*` $\rightarrow$ `.agent/skills/`
+   - `<fuente>/.agents/mcp/*` $\rightarrow$ `.agent/mcp/`
+   - `<fuente>/.agents/templates/*` $\rightarrow$ `.agent/templates/`
+   - `<fuente>/README.md` $\rightarrow$ `.agent/README.md` (como documentación offline del arnés)
 2. **PROHIBICIÓN ESTRICTA**: Prohibido copiar `plan.md` o el `README.md` de `agent-core` a la raíz del proyecto destino.
 
 ---
@@ -256,7 +259,7 @@ Tras la confirmación explícita del usuario:
 Si se ejecuta con el modificador `--update`:
 
 1. **Inspección de Diferencias**:
-   - Compara los subagentes en `.agent/agents/`, workflows en `.agent/workflows/` y skills en `.agent/skills/` contra las plantillas fuente en `agent-core`.
+   - Compara los subagentes en `.agent/agents/`, workflows en `.agent/workflows/` y skills en `.agent/skills/` contra las plantillas y componentes fuente en `agent-core` (residiendo en `.agents/` o `.agent/`).
 2. **Detección de Personalizaciones y Respaldo Preventivo**:
    - Si un archivo en `.agent/` tiene modificaciones locales respecto a la versión upstream:
      - Crea un respaldo preventivo en `.agent/backup-<timestamp>/<archivo>`.

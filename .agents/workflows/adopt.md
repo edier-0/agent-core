@@ -10,22 +10,28 @@ Este workflow detecta el entorno de ejecución activo (o la preferencia indicada
 
 ## Fase 1: Evaluación y Normalización del Repositorio (Cero Basura en Raíz)
 
-1. **Detección y Reorganización de Árbol Expuesto**:
-   - Comprueba si existen carpetas del arnés expuestas en la raíz (`agents/`, `workflows/`, `skills/`, `templates/`, `mcp/`).
-   - Si existen en la raíz en lugar de `.agent/`:
+1. **Detección y Normalización de `.agents/` o Árbol Expuesto**:
+   - **Caso A: Repositorio clonado directamente desde `agent-core` (presencia de `.agents/` en la raíz)**:
+     - Crea el contenedor canónico `.agent/` si no existe.
+     - Normaliza los componentes hacia `.agent/` (trasladando o copiando `.agents/*` $\rightarrow$ `.agent/`) o preserva canónicamente `.agents/` si la plataforma cliente lo requiere (ej. Antigravity).
+     - Comprueba el `README.md` en la raíz: si contiene la firma determinista `<!-- AGENT-CORE-ROOT-README -->` o la frase `Fábrica de Software Agéntica Portátil (*Portable Agentic Software Factory*)`:
+       - Se identifica inequívocamente como el manual maestro de `agent-core`: muévelo a `.agent/README.md` (preservando el manual de consulta offline del arnés).
+       - Inicializa un `README.md` básico y limpio para la aplicación del usuario.
+       - *(Si no contiene dicha firma determinista, se preserva intacto como el README legítimo del proyecto del usuario)*.
+     - Si existe `plan.md` en la raíz (plan interno de construcción de `agent-core`):
+       - Muévelo a `.agent/docs/history/agent-core-plan.md` para no contaminar la raíz ni colisionar con los planes de especificación (`specs/NNN-nombre/plan.md`).
+   - **Caso B: Carpetas legacy sueltas en la raíz (`agents/`, `workflows/`, `skills/`, `templates/`, `mcp/`)**:
      - Crea el directorio canónico `.agent/` si no existe.
-     - Mueve de inmediato:
+     - Mueve quirúrgicamente las carpetas hacia `.agent/`:
        - `agents/` $\rightarrow$ `.agent/agents/`
        - `workflows/` $\rightarrow$ `.agent/workflows/`
        - `skills/` $\rightarrow$ `.agent/skills/`
        - `templates/` $\rightarrow$ `.agent/templates/`
        - `mcp/` $\rightarrow$ `.agent/mcp/`
-   - Si existe `README.md` en la raíz y contiene la firma determinista `<!-- AGENT-CORE-ROOT-README -->` o la frase `Fábrica de Software Agéntica Portátil (*Portable Agentic Software Factory*)`:
-     - Se identifica inequívocamente como el manual de `agent-core`: muévelo a `.agent/README.md` (preservando el manual de consulta offline del arnés).
-     - Inicializa un `README.md` básico para la aplicación del usuario.
-     - *(Si no contiene dicha firma determinista, se preserva intacto como el README legítimo del proyecto del usuario)*.
-   - Si existe `plan.md` en la raíz (plan interno de construcción de `agent-core`):
-     - Muévelo a `.agent/docs/history/agent-core-plan.md` para no contaminar la raíz.
+     - Si `README.md` en la raíz contiene la firma determinista o la frase de la fábrica, muévelo a `.agent/README.md` e inicializa un `README.md` limpio para la aplicación del usuario.
+     - Si existe `plan.md` en la raíz, muévelo a `.agent/docs/history/agent-core-plan.md`.
+   - **Caso C: El arnés ya reside en `.agent/`**:
+     - No requiere movimientos estructurales; el arnés se encuentra canónicamente aislado.
 2. **Comprobación de Archivos Fundacionales**:
    - Comprueba si existen:
      - `AGENTS.md` (raíz).

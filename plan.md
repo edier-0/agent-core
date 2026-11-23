@@ -221,8 +221,14 @@ C:\Users\edier\Documents\EDIER\agent-core\
   Sigue ESTRICTAMENTE este protocolo en orden:
 
   0. DETECCIÓN Y REORGANIZACIÓN QUIRÚRGICA DE ÁRBOL EXPUESTO (Cero Basura en Raíz):
-     - Verifica si las carpetas del arnés (`agents/`, `workflows/`, `skills/`, `templates/`, `mcp/`) se encuentran expuestas directamente en la raíz del proyecto (típico cuando este repositorio fue clonado directamente para iniciar el proyecto):
-       * SI ESTÁN EXPUESTAS EN LA RAÍZ:
+     - Verifica si el arnés proviene de un clon directo de `agent-core` (presencia de `.agents/` en la raíz) o si existen carpetas legacy sueltas (`agents/`, `workflows/`, `skills/`, `templates/`, `mcp/`) en la raíz del proyecto:
+       * SI EXISTE `.agents/` EN LA RAÍZ:
+         1. Crea o asegura el directorio canónico `.agent/`.
+         2. Normaliza los componentes hacia `.agent/` (trasladando o copiando `.agents/*` -> `.agent/`) o preserva canónicamente `.agents/` si la plataforma cliente lo requiere (ej. Antigravity).
+         3. Reubica la documentación del arnés para no contaminar la raíz:
+            - Si `README.md` en la raíz contiene `<!-- AGENT-CORE-ROOT-README -->` o la frase de la fábrica `Fábrica de Software Agéntica Portátil (*Portable Agentic Software Factory*)`, muévelo a `.agent/README.md` e inicializa un `README.md` limpio para la aplicación del usuario.
+            - Si `plan.md` está en la raíz, muévelo a `.agent/docs/history/agent-core-plan.md` para evitar colisiones con los planes del proyecto (`specs/NNN-.../plan.md`).
+       * SI EXISTEN CARPETAS LEGACY EXPUESTAS EN LA RAÍZ (`agents/`, `workflows/`, `skills/`, etc.):
          1. Crea el directorio canónico `.agent/` si no existe.
          2. Mueve quirúrgicamente las carpetas del arnés a `.agent/`:
             - `agents/` -> `.agent/agents/`
@@ -230,9 +236,8 @@ C:\Users\edier\Documents\EDIER\agent-core\
             - `skills/` -> `.agent/skills/`
             - `templates/` -> `.agent/templates/`
             - `mcp/` -> `.agent/mcp/`
-         3. Reubica la documentación del arnés para no contaminar la raíz:
-            - Si existe `README.md` y pertenece al arnés (contiene `# agent-core`), muévelo a `.agent/README.md` y genera en la raíz un `README.md` limpio e inicial para el nuevo proyecto.
-            - Si existe `plan.md` en la raíz (plan de construcción de agent-core), muévelo a `.agent/docs/history/agent-core-plan.md` para evitar colisiones con los planes del proyecto (`specs/NNN-.../plan.md`).
+         3. Si `README.md` en la raíz contiene `<!-- AGENT-CORE-ROOT-README -->` o la frase de la fábrica, muévelo a `.agent/README.md` e inicializa un `README.md` limpio para la aplicación del usuario.
+         4. Si `plan.md` está en la raíz, muévelo a `.agent/docs/history/agent-core-plan.md`.
        * SI YA ESTÁN EN `.agent/`:
          - No muevas nada; la estructura ya está canónicamente aislada.
 

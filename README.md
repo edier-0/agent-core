@@ -110,8 +110,8 @@ Abre el directorio en tu entorno de desarrollo habitual:
 Copia el bloque completo de la [Sección 4](#4-el-prompt-universal-de-auto-adopción-copiar-y-pegar) y pégalo en el chat de tu agente.
 
 #### Paso 4: Reorganización Quirúrgica Automática
-El agente detectará que las carpetas del arnés (`agents/`, `workflows/`, `skills/`, etc.) están en la raíz y de forma automática:
-1. Las trasladará limpiamente dentro de `.agent/`.
+El agente detectará si el arnés proviene de `.agents/` o de carpetas legacy expuestas en la raíz y de forma automática:
+1. Las trasladará limpiamente dentro de `.agent/` (normalizando `.agents/` $\rightarrow$ `.agent/`).
 2. Moverá este manual de instrucciones a `.agent/README.md` (para que te sirva de consulta offline permanente).
 3. Moverá el plan de construcción a `.agent/docs/history/agent-core-plan.md`.
 4. Creará un `README.md` nuevo y limpio exclusivo para tu nueva aplicación.
@@ -148,15 +148,13 @@ El agente generará y validará contigo los 5 archivos maestros:
 Utiliza este camino si ya tienes un proyecto con código escrito y quieres dotarlo de toda la disciplina, subagentes y skills de `agent-core`.
 
 #### Paso 1: Inyectar la carpeta del arnés en tu proyecto
-Copia la carpeta de `agent-core` dentro de tu proyecto en el directorio `.agent/`:
+Copia los componentes de `agent-core` dentro de tu proyecto en el directorio `.agent/`:
 
 ```bash
-# Opción 1: Clonar directamente dentro de .agent/
-git clone https://github.com/edier-0/agent-core.git .agent
-
-# Opción 2: Copiar desde una carpeta local
-mkdir -p .agent
-cp -r /ruta/a/agent-core/* .agent/
+# Opción 1: Clonar y copiar los componentes de .agents/ hacia .agent/
+git clone https://github.com/edier-0/agent-core.git /tmp/agent-core && cp -r /tmp/agent-core/.agents/* .agent/ && rm -rf /tmp/agent-core
+# Opción 2: Copiar desde repositorio local de agent-core
+mkdir -p .agent && cp -r /ruta/a/agent-core/.agents/* .agent/
 ```
 
 #### Paso 2: Pegar el Prompt Universal en tu Agente
@@ -183,8 +181,14 @@ Tu objetivo es activar el flujo de ingeniería de software SDD + TDD de agent-co
 Sigue ESTRICTAMENTE este protocolo en orden:
 
 0. DETECCIÓN Y REORGANIZACIÓN QUIRÚRGICA DE ÁRBOL EXPUESTO (Cero Basura en Raíz):
-   - Verifica si las carpetas del arnés (`agents/`, `workflows/`, `skills/`, `templates/`, `mcp/`) se encuentran expuestas directamente en la raíz del proyecto (típico cuando este repositorio fue clonado directamente para iniciar el proyecto):
-     * SI ESTÁN EXPUESTAS EN LA RAÍZ:
+   - Verifica si el arnés proviene de un clon directo de `agent-core` (presencia de `.agents/` en la raíz) o si existen carpetas legacy sueltas (`agents/`, `workflows/`, `skills/`, `templates/`, `mcp/`) en la raíz del proyecto:
+     * SI EXISTE `.agents/` EN LA RAÍZ:
+       1. Crea o asegura el directorio canónico `.agent/` si no existe.
+       2. Normaliza los componentes hacia `.agent/` (trasladando o copiando `.agents/*` -> `.agent/`) o preserva canónicamente `.agents/` si la plataforma cliente lo requiere (ej. Antigravity).
+       3. Reubica la documentación del arnés para no contaminar la raíz:
+          - Si `README.md` en la raíz contiene `<!-- AGENT-CORE-ROOT-README -->` o la frase de la fábrica `Fábrica de Software Agéntica Portátil (*Portable Agentic Software Factory*)`, muévelo a `.agent/README.md` e inicializa un `README.md` limpio para la aplicación del usuario.
+          - Si `plan.md` está en la raíz, muévelo a `.agent/docs/history/agent-core-plan.md` para evitar colisiones con los planes del proyecto (`specs/NNN-.../plan.md`).
+     * SI EXISTEN CARPETAS LEGACY EXPUESTAS EN LA RAÍZ (`agents/`, `workflows/`, `skills/`, etc.):
        1. Crea el directorio canónico `.agent/` si no existe.
        2. Mueve quirúrgicamente las carpetas del arnés a `.agent/`:
           - `agents/` -> `.agent/agents/`
@@ -192,9 +196,8 @@ Sigue ESTRICTAMENTE este protocolo en orden:
           - `skills/` -> `.agent/skills/`
           - `templates/` -> `.agent/templates/`
           - `mcp/` -> `.agent/mcp/`
-       3. Reubica la documentación del arnés para no contaminar la raíz:
-          - Si existe `README.md` y pertenece al arnés (contiene `# agent-core`), muévelo a `.agent/README.md` y genera en la raíz un `README.md` limpio e inicial para el nuevo proyecto.
-          - Si existe `plan.md` en la raíz (plan de construcción de agent-core), muévelo a `.agent/docs/history/agent-core-plan.md` para evitar colisiones con los planes del proyecto (`specs/NNN-.../plan.md`).
+       3. Si `README.md` en la raíz contiene `<!-- AGENT-CORE-ROOT-README -->` o la frase de la fábrica, muévelo a `.agent/README.md` e inicializa un `README.md` limpio para la aplicación del usuario.
+       4. Si `plan.md` está en la raíz, muévelo a `.agent/docs/history/agent-core-plan.md`.
      * SI YA ESTÁN EN `.agent/`:
        - No muevas nada; la estructura ya está canónicamente aislada.
 
@@ -465,7 +468,7 @@ agent-core/
 ## 11. Preguntas Frecuentes (FAQ)
 
 #### ¿Por qué todos los archivos del arnés se mueven a `.agent/` en proyectos cliente?
-Bajo el modelo Fábrica-Instalador, `agent-core` mantiene sus archivos en la raíz como repositorio fuente, pero en los proyectos cliente destino preserva la pureza del repositorio: la raíz pertenece a tu software (`src/`, `package.json`, etc.). Al aislar el arnés en `.agent/`, evitas contaminar tu código con herramientas de IA y facilitas actualizar el arnés a futuro con `/init --update`.
+Bajo el modelo Fábrica-Instalador, `agent-core` mantiene sus componentes maestros unificados en `.agents/` como repositorio fuente, pero en los proyectos cliente destino preserva la pureza del repositorio: la raíz pertenece a tu software (`src/`, `package.json`, etc.). Al aislar el arnés en `.agent/`, evitas contaminar tu código con herramientas de IA y facilitas actualizar el arnés a futuro con `/init --update`.
 
 #### ¿Puedo usar `agent-core` con cualquier lenguaje y framework?
 Sí. `agent-core` es 100% agnóstico. Funciona con Node.js, TypeScript, Python, Go, Rust, Java, C#, PHP o cualquier otra tecnología. La disciplina de especificación (EARS) y pruebas (TDD) es universal.
