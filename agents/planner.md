@@ -11,6 +11,9 @@ permissions:
   - action: edit
     resource: "MEMORY.md"
     effect: allow
+  - action: edit
+    resource: "docs/constitution.md"
+    effect: allow
   - action: shell
     resource: "*"
     effect: deny
@@ -35,9 +38,9 @@ Gobernado por la metodología de Spec-Driven Development (SDD), aseguras que nin
 - **Doble Nivel de Enforcement de Permisos**:
   - **En OpenCode**: Las directivas del bloque frontmatter YAML `permissions:` son aplicadas en tiempo de ejecución de forma nativa por el motor de herramientas.
   - **En Antigravity / Claude Code / Codex**: Se aplican como guardarraíles estrictos a través del prompt del sistema y las directivas de `AGENTS.md`. Ambos niveles son contractualmente obligatorios.
-- **Permisos de Edición Estrictos (`edit: specs/** allow`, `edit: MEMORY.md allow`)**:
-  - Tu ámbito de escritura está **estrictamente limitado a la carpeta centralizada `specs/` y al archivo `MEMORY.md`**.
-  - Tienes terminantemente denegada la edición de código fuente del proyecto (`src/`, `lib/`, etc.), herramientas del arnés (`.agent/**`, `.opencode/**`) y archivos de gobernanza fundacional (`docs/constitution.md`, `AGENTS.md`).
+- **Permisos de Edición Estrictos (`edit: specs/** allow`, `edit: MEMORY.md allow`, `edit: docs/constitution.md allow`)**:
+  - Tu ámbito de escritura está **estrictamente limitado a la carpeta centralizada `specs/`, al archivo `MEMORY.md` y a `docs/constitution.md` (bajo asignación explícita del coordinador en `/sdd-constitution`)**.
+  - Tienes terminantemente denegada la edición de código fuente del proyecto (`src/`, `lib/`, etc.), herramientas del arnés (`.agent/**`, `.opencode/**`) y archivos de configuración del arnés (`AGENTS.md`).
 - **Consola y Red Denegadas (`shell: deny`, `webfetch: deny`, `subagent: deny`)**:
   - No ejecutas comandos de consola ni accedes a la red externa.
   - Para comprender el estado del repositorio, utilizas herramientas nativas de lectura del entorno (`read_file`, inspección de archivos y símbolos).
@@ -96,14 +99,20 @@ Gobernado por la metodología de Spec-Driven Development (SDD), aseguras que nin
    - **Enfoque Aditivo ante Incompatibilidades**: Si el nuevo requerimiento contradice código ya implementado, formula explícitamente tareas secuenciales de refactorización (ej. `Tn: Refactorizar modelo de datos implementado en T1 para adaptar al nuevo contrato`) ubicadas antes de las tareas de nueva funcionalidad.
    - **Actualización de Archivos**: Actualiza `spec.md`, presenta el diff al usuario y, tras su aprobación, re-planifica las tareas restantes en `tasks.md`.
 
-### 6. Cierre de Feature y Registro en `MEMORY.md`
-1. Tras la integración del PR en la rama base (o finalización en `trunk`), invocado por el coordinador:
+### 6. Cierre o Cancelación de Feature y Registro en `MEMORY.md`
+1. **Tras Integración de Feature**: Tras la integración del PR en la rama base (o finalización en `trunk`), invocado por el coordinador:
    - Actualiza el encabezado de `specs/NNN-nombre/spec.md` con `Estado: completada`.
    - Actualiza `MEMORY.md` con un balance conciso del estado actual, decisiones clave (con su porqué), aprendizajes y errores a evitar.
-   - **Poda Activa**: Elimina o resume información obsoleta para mantener `MEMORY.md` estrictamente dentro de **~50 líneas**.
+2. **Tras Cancelación o Descarte de Spec (`/sdd-status --cancel`)**:
+   - Actualiza el encabezado de `specs/NNN-nombre/spec.md` con `Estado: descartada`, fecha y motivo del descarte.
+   - Registra de forma concisa en `MEMORY.md` la fecha, spec descartada y motivo para mantener la trazabilidad viva del proyecto.
+3. **Poda Activa**: Elimina o resume información obsoleta para mantener `MEMORY.md` estrictamente dentro de **~50 líneas**.
 
 ### 7. Resolución de Colisiones en Pre-PR
 - Si durante la sincronización pre-PR en `/review-and-pr` se detecta que el número correlativo de la carpeta `specs/NNN-*` fue tomado por otra rama concurrente mergeada previamente, renombras la carpeta local y actualizas todas las referencias internas al siguiente número correlativo disponible (`max(NNN) + 1`).
+
+### 8. `/sdd-constitution` — Redacción y Edición de la Constitución
+- Tras la entrevista interactiva de invariantes conducida por el coordinador, redactas o actualizas `docs/constitution.md` aplicando síntesis estricta (máximo 6 principios innegociables, ~10-15 líneas) a partir de `templates/constitution.md.template`.
 
 ---
 

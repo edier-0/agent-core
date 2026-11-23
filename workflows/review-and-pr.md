@@ -101,16 +101,20 @@ El sistema intenta abrir el Pull Request utilizando la mejor herramienta disponi
    - Revisa `AGENT_CAN_MERGE` en `AGENTS.md`.
    - Si es `true`: consulta confirmación al usuario antes de proceder a la fusión.
    - Si es `false`: notifica que el PR queda abierto a la espera de revisión y aprobación humana en GitHub.
-2. **Sincronización Asistida a Producción (`main`)**:
-   - Si la rama base del PR fue `develop`, tras fusionar en `develop`, consulta al usuario:
-     > *"¿Deseas sincronizar estos cambios a producción (`main`) ahora?"*
-   - Si el usuario autoriza, el `@coordinator` despacha a `@implementer` para ejecutar la secuencia:
-     - Sincroniza localmente: `git checkout develop && git pull origin develop`.
-     - Intenta fusionar y publicar en `main`:
+2. **Sincronización Asistida a Producción (`main`) mediante Release PR**:
+   - Si la rama base del PR fue `develop`, tras fusionarse en `develop`, consulta al usuario:
+     > *"¿Deseas sincronizar estos cambios a producción (`main`) mediante un Pull Request de Release ahora?"*
+   - Si el usuario autoriza, de acuerdo con la Regla 5 de Gobernanza (prohibición estricta de merges directos locales a ramas protegidas o producción), la sincronización a `main` se realiza **exclusivamente mediante la apertura de un Pull Request de Release (`compare: develop -> base: main`)** sujeto a compuertas de CI en verde y aprobación humana:
+     - **Nivel 1 (GitHub MCP)**: Si está disponible, `@coordinator` crea el PR: Base `main`, Head `develop`, Título `release: sincronizar develop a main`.
+     - **Nivel 2 (GitHub CLI `gh`)**: Si no hay MCP, `@coordinator` despacha a `@implementer`:
        ```bash
-       git checkout main && git merge develop && git push origin main
+       gh pr create --base main --head develop --title "release: sincronizar develop a main" --body "Release PR de sincronización de develop hacia producción."
        ```
-     - **Manejo de Ramas Protegidas en `main`**: Si GitHub rechaza el push directo por reglas de protección de rama (`protected branch hook`), crea automáticamente un Pull Request de Release (`compare: develop -> base: main`), reporta el enlace y solicita aprobación en GitHub.
+     - **Nivel 3 (Enlace Web Asistido)**: Si no hay MCP ni CLI, el coordinador genera el enlace para apertura asistida en el navegador:
+       ```
+       https://github.com/<owner>/<repo>/compare/main...develop?expand=1
+       ```
+   - El Pull Request de Release queda abierto a la espera de que los workflows de CI pasen en verde y el equipo autorice el merge en GitHub. Queda estrictamente prohibido realizar merge local o push directo a `main`.
 
 ---
 
@@ -141,5 +145,10 @@ Tras confirmarse la integración del PR en la rama base:
    - Feature implementada y cerrada.
    - Decisiones de arquitectura tomadas y su justificación.
    - Poda activa para mantener `MEMORY.md` por debajo de ~50 líneas.
-3. Emite un mensaje final de felicitación y cierre de ciclo:
+3. **Recuperación Asistida de `git stash` (Si Aplica)**:
+   - Si al inicializar la spec en `/sdd-spec` se resguardaron cambios en stash:
+     - El `@coordinator` consulta al usuario:
+       > *"Se detectaron cambios resguardados en stash previos a esta spec. ¿Deseas recuperarlos ahora (`git stash pop`)?"*
+     - Tras la autorización del usuario, el `@coordinator` despacha a `@implementer` para ejecutar `git stash pop` y verificar el estado del árbol de trabajo.
+4. Emite un mensaje final de felicitación y cierre de ciclo:
    > *"🎉 Feature [NNN] integrada y cerrada con éxito. El repositorio está limpio, sincronizado y listo para la próxima especificación."*

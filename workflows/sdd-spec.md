@@ -6,6 +6,9 @@ description: Inicializa una nueva especificación formal creando la rama temáti
 
 Este workflow inicia el ciclo Spec-Driven Development (SDD). Es ejecutado por el Coordinador en colaboración con `@planner` para capturar requerimientos, verificar la limpieza de Git, ramificar tempranamente y redactar la especificación funcional.
 
+**Gobernanza de Consola y Roles**:
+Toda inspección del árbol y ejecución de comandos de consola de Git (`git status --porcelain`, `git rebase --abort`, `git merge --abort`, `git fetch origin`, `git checkout`, `git checkout -b`, `git stash`, etc.) se delega y ejecuta **exclusivamente a través de `@implementer`** (`invoke_subagent` con `Workspace: "inherit"`). El `@coordinator` y `@planner` tienen prohibido ejecutar comandos de consola directamente en el hilo principal.
+
 ---
 
 ## Parámetros de Invocación
@@ -21,19 +24,21 @@ Este workflow inicia el ciclo Spec-Driven Development (SDD). Es ejecutado por el
 ## Fase 1: Comprobación de Git y Árbol de Trabajo Limpio
 
 1. **Abortar Procesos Residuales**:
-   - Si existen estados residuales de Git en el árbol (`REBASE-APPLY`, `MERGE_HEAD`), ejecuta:
+   - El `@coordinator` despacha a `@implementer` para verificar si existen estados residuales de Git en el árbol (`REBASE-APPLY`, `MERGE_HEAD`) y abortarlos:
      ```bash
      git rebase --abort 2>/dev/null || git merge --abort 2>/dev/null || true
      ```
 2. **Comprobación de Árbol Limpio Pre-Ramificación**:
-   - Ejecuta `git status --porcelain`.
+   - El `@coordinator` despacha a `@implementer` para ejecutar `git status --porcelain`.
    - Si existen archivos modificados, staged o no rastreados:
      - **DETENERSE INMEDIATAMENTE**.
-     - Notifica al usuario: *"El árbol de trabajo tiene cambios sin commitear. Por favor realiza un commit, descarta los cambios o guárdalos en stash (`git stash`) antes de iniciar una nueva spec."*
+     - Notifica al usuario: *"El árbol de trabajo tiene cambios sin commitear. Por favor realiza un commit, descarta los cambios o guárdalos en stash (`git stash push -m \"sdd-stash: pre-spec NNN\"`) antes de iniciar una nueva spec."*
+     - **Trazabilidad de Stash**: Si el usuario resguarda cambios con `git stash`, el `@coordinator` registra el evento para recordar y asistir al usuario en su recuperación (`git stash pop` ejecutado por `@implementer`) una vez integrada (`/review-and-pr`) o cancelada (`/sdd-status --cancel`) la spec.
 3. **Sincronización con la Rama Base**:
    - Lee `PR_TARGET_BRANCH` de `AGENTS.md` (por defecto `develop` o `main`).
-   - Si existe remoto configurado: `git fetch origin && git checkout <base_branch> && git pull origin <base_branch>`.
-   - Si opera en modo local-first (sin remoto): `git checkout <base_branch>`.
+   - El `@coordinator` despacha a `@implementer` para sincronizar con la base:
+     - Si existe remoto configurado: `git fetch origin && git checkout <base_branch> && git pull origin <base_branch>`.
+     - Si opera en modo local-first (sin remoto): `git checkout <base_branch>`.
 
 ---
 
@@ -53,13 +58,13 @@ Este workflow inicia el ciclo Spec-Driven Development (SDD). Es ejecutado por el
 3. **Creación de Rama Temática (Según `GIT_WORKFLOW_MODE`)**:
    - **En modo `branch_pr` (por defecto)**:
      - Determina el prefijo `<tipo>`: `feature/` por defecto (o `fix/`, `refactor/`, `chore/`, `docs/`, `test/` si se especificó).
-     - Crea la rama temática desde la rama base:
+     - El `@coordinator` despacha a `@implementer` para crear la rama temática desde la rama base:
        ```bash
        git checkout -b <tipo>/<NNN-slug>
        ```
      - Esta ramificación temprana encapsula spec, plan, tareas y código en un historial aislado.
    - **En modo `trunk`**:
-     - Permanece en `main` asegurando que esté limpia y sincronizada.
+     - `@implementer` permanece en `main` asegurando que esté limpia y sincronizada.
 
 ---
 

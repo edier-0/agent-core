@@ -4,7 +4,10 @@ description: Valida integralmente la spec implementada mediante QA exhaustivo co
 
 # Workflow: Validación Integral de la Especificación (`/sdd-validate`)
 
-Este workflow ejecuta la validación técnica y funcional final de la feature implementada. Es orquestado por el Coordinador, quien convoca a `@reviewer` en modo de auditoría de código para verificar que cada requerimiento funcional (RF) de la spec se cumpla plenamente antes de autorizar la apertura del Pull Request.
+Este workflow ejecuta la validación técnica y funcional final de la feature implementada. Es orquestado por el Coordinador, quien despacha a `@implementer` para correr la suite global de pruebas y convoca a `@reviewer` en modo de auditoría de código para verificar que cada requerimiento funcional (RF) de la spec se cumpla plenamente antes de autorizar la apertura del Pull Request.
+
+**Gobernanza de Consola y Roles**:
+Toda ejecución de comandos de consola (`TEST_COMMAND`, `git status`, `git checkout`, `git clean`, `git reset`, `PKG_RESTORE_COMMAND`) se delega y ejecuta **exclusivamente a través de `@implementer`** (`invoke_subagent` con `Workspace: "inherit"`). El `@coordinator` despacha a `@implementer` para correr la suite de pruebas completa y entrega el resultado y logs a `@reviewer` para su auditoría técnica e imparcial de requerimientos. `@reviewer` audita el diff, código y pruebas sin ejecutar consola directamente en el hilo principal ni modificar código.
 
 ---
 
@@ -17,16 +20,19 @@ Este workflow ejecuta la validación técnica y funcional final de la feature im
 
 ## Fase 1: Invocación de `@reviewer` en Modo Validación
 
-El Coordinador inyecta al subagente revisor el siguiente mensaje:
+1. **Ejecución Previa de Suite de Pruebas Global (`TEST_COMMAND`)**:
+   - El `@coordinator` despacha a `@implementer` para ejecutar la suite de integración completa (`TEST_COMMAND`, o en monorrepositorios las pruebas de integración raíz).
+   - `@implementer` ejecuta el comando y devuelve el reporte detallado de ejecución al `@coordinator`.
+   - Si los tests fallan en esta fase, el coordinador no convoca a auditoría a `@reviewer`; solicita a `@implementer` corregir bajo TDD o detiene el flujo.
+   - Si el 100% de los tests terminan en verde, el `@coordinator` inyecta al subagente revisor los resultados y el contexto:
 
 > `[MODO: VALIDACION_IMPLEMENTACION]`  
 > Audita la implementación completa de la spec en `specs/NNN-nombre/spec.md`.  
-> Revisa la suite de pruebas global (`TEST_COMMAND`), el diff completo contra la rama base y las interfaces visuales si aplica.
+> Revisa la suite de pruebas global (`TEST_COMMAND`) ejecutada exitosamente por `@implementer`, el diff completo contra la rama base y las interfaces visuales si aplica.
 
 ### Dimensiones de Evaluación de QA:
-1. **Ejecución de Suite de Pruebas Global (`TEST_COMMAND`)**:
-   - Ejecuta la suite de integración completa (en monorrepositorios, corre las pruebas de integración raíz).
-   - El 100% de los tests deben terminar en verde sin excepciones.
+1. **Auditoría de Resultados de la Suite Global (`TEST_COMMAND`)**:
+   - `@reviewer` audita el log de ejecución provisto por `@implementer`, verificando que la cobertura de pruebas cubra todos los RFs y que ningún test haya sido omitido (`skip`) sin justificación.
 2. **Inspección de `git diff` contra la Rama Base**:
    - Comprueba que el código implementado se adhiera estrictamente a `plan.md` y `docs/constitution.md`.
    - Verifica la ausencia de archivos temporales, logs, comentarios `TODO` huérfanos o código comentado.
@@ -61,7 +67,7 @@ Discrepancias detectadas:
      > *"La validación técnica no superó la segunda vuelta de QA. ¿Deseas (1) intentar un enfoque alternativo, (2) revertir la feature completa al estado inicial limpio de la rama, o (3) ajustar manualmente los archivos?"*
 
 #### Protocolo de Reversión Limpia (Si el Usuario Elige Revertir):
-1. Limpieza de archivos modificados y reset al estado base:
+1. Limpieza de archivos modificados y reset al estado base (ejecutado por `@implementer` tras despacho del `@coordinator`):
    ```bash
    git checkout .
    git clean -fd
@@ -73,7 +79,7 @@ Discrepancias detectadas:
    # En modo trunk:
    # git reset --hard origin/main
    ```
-2. **Restauración de Dependencias**: Si se modificaron dependencias, corre `PKG_RESTORE_COMMAND` (ej. `npm install` o `pip install -r`).
+2. **Restauración de Dependencias**: Si se modificaron dependencias, `@implementer` corre `PKG_RESTORE_COMMAND` (ej. `npm install` o `pip install -r`).
 3. **Alerta de Base de Datos**: Si hubo migraciones, alerta al usuario para que revierta su base de datos local según su flujo habitual (sin ejecutar comandos destructivos automatizados).
 
 ---

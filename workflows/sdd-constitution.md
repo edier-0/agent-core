@@ -1,11 +1,11 @@
 ---
-description: Crea o audita docs/constitution.md definiendo como máximo 6 principios rectores innegociables (~10-15 líneas) ejecutado directamente por el agente principal.
+description: Conduce la entrevista de invariantes y despacha a @planner para redactar o auditar docs/constitution.md definiendo como máximo 6 principios rectores (~10-15 líneas).
 ---
 
 # Workflow: Creación y Auditoría de la Constitución (`/sdd-constitution`)
 
 Este workflow establece o audita el contrato supremo de gobernanza del proyecto (`docs/constitution.md`).
-Es ejecutado directamente por el **agente principal / root**, ya que la constitución define las reglas rectoras innegociables para todos los componentes, módulos y subagentes del sistema.
+El **`@coordinator`** conduce la entrevista interactiva de invariantes y delega la redacción y escritura de `docs/constitution.md` a **`@planner`**, garantizando el cumplimiento del veto de auto-edición del coordinador.
 
 ---
 
@@ -26,13 +26,13 @@ Es ejecutado directamente por el **agente principal / root**, ya que la constitu
 ### Modo A: Creación Inicial (Día 0)
 
 1. **Entrevista de Invariantes (Tarjetas de Selección con Opción Libre)**:
-   El agente principal analiza el proyecto y consulta al usuario sobre los límites absolutos estructurando cada pregunta en tarjetas de selección (herramienta interactiva `ask_question` si existe, o tarjetas Markdown `[A] (Recomendada)`, `[B]`, `[O] Escribir otra respuesta`):
+   El `@coordinator` analiza el proyecto y consulta al usuario sobre los límites absolutos estructurando cada pregunta en tarjetas de selección (herramienta interactiva `ask_question` si existe, o tarjetas Markdown `[A] (Recomendada)`, `[B]`, `[O] Escribir otra respuesta`):
    - Invariante de seguridad y credenciales (`(Recommended) Prohibición total de secretos en código y uso estricto de .env sin fallbacks`, `Auditoría manual de claves`).
    - Política de pruebas y build (`(Recommended) Verificación previa obligatoria en CI con tests en verde y compilación limpia antes de merge`, `Tests solo en PRs mayores`).
    - Invariantes de persistencia y base de datos (`(Recommended) Esquemas reversibles y migraciones idempotentes no destructivas`, `Ajustes directos permitidos`).
    - Modularidad y acoplamiento (`(Recommended) Módulos desacoplados que solo se comunican por contratos públicos`, `Acceso directo entre capas`).
-2. **Redacción del Borrador**:
-   A partir de `templates/constitution.md.template`, redacta el borrador con la siguiente estructura:
+2. **Redacción y Escritura del Borrador**:
+   El `@coordinator` despacha a `@planner`, quien a partir de `templates/constitution.md.template` redacta y escribe el borrador en `docs/constitution.md` con la siguiente estructura:
    ```markdown
    # docs/constitution.md — Constitución Técnica del Proyecto
 
@@ -44,7 +44,7 @@ Es ejecutado directamente por el **agente principal / root**, ya que la constitu
    6. **Gobernanza Git**: La rama base nunca recibe merges directos locales; toda integración se realiza mediante Pull Request validado por CI.
    ```
 3. **Validación Humana**:
-   Presenta el borrador al usuario. Solo se escribe en `docs/constitution.md` tras su aprobación explícita.
+   Presenta el borrador al usuario. Solo se consolida en `docs/constitution.md` tras su aprobación explícita.
 
 ---
 
@@ -58,4 +58,4 @@ Si `docs/constitution.md` ya existe:
    - Si la constitución contiene comandos específicos, versiones de paquetes o detalles operacionales que cambian con frecuencia, propone al usuario moverlos a `AGENTS.md`.
    - Si se detectan principios ambiguos o no testeables, propone una redacción formal y concisa.
 3. **Consolidación**:
-   Presenta la propuesta de poda o ajuste y actualiza el archivo únicamente con el consentimiento del usuario.
+   Presenta la propuesta de poda o ajuste y el `@coordinator` despacha a `@planner` para actualizar `docs/constitution.md` únicamente con el consentimiento del usuario.

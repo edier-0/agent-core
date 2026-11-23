@@ -71,13 +71,14 @@ Presenta al usuario un reporte estructurado y conciso:
 
 Si el usuario decide cancelar o descartar un requerimiento:
 
-1. **Actualización de Metadatos**:
+1. **Actualización de Metadatos y Memoria**:
    - `@planner` actualiza el encabezado de `specs/NNN-nombre/spec.md`:
      ```markdown
      - **Estado**: descartada
      - **Fecha de Cancelación**: AAAA-MM-DD
      - **Motivo**: [descripción o justificación del descarte]
      ```
+   - `@planner` registra de forma concisa en `MEMORY.md` la fecha, spec descartada y motivo del descarte para mantener la trazabilidad viva del proyecto (aplicando poda activa para mantener `MEMORY.md` dentro de ~50 líneas).
 2. **Tratamiento según el Modo de Git (Delegado a `@implementer`)**:
 
    #### En modo `branch_pr`:
@@ -107,3 +108,9 @@ Si el usuario decide cancelar o descartar un requerimiento:
      git commit -m "docs(NNN): archivar spec descartada"
      ```
    - Esto deja `main` 100% libre de código parcial o a medio implementar, preservando la justificación histórica de la cancelación en `specs/NNN-nombre/spec.md`.
+
+3. **Recuperación Asistida de `git stash` (Si Aplica)**:
+   - Si al iniciar la spec en `/sdd-spec` se resguardaron cambios con `git stash`:
+     - El `@coordinator` consulta al usuario:
+       > *"Se detectaron cambios resguardados en stash antes de iniciar esta spec descartada. ¿Deseas recuperarlos ahora (`git stash pop`)?"*
+     - Tras la autorización del usuario, el `@coordinator` despacha a `@implementer` para ejecutar `git stash pop` y verificar el estado del árbol de trabajo.

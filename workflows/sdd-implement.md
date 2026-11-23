@@ -11,18 +11,27 @@ Este workflow ejecuta una tarea individual de `specs/NNN-nombre/tasks.md`. Es ej
 ## Parámetros e Inferencia de Tarea
 
 ```bash
-/sdd-implement [Tn] [--step | --auto]
+/sdd-implement [Tn] [--step | --auto | --all]
 ```
+
+### Reglas de Parsing y Prioridad de Flags:
+El parser del `@coordinator` procesa los argumentos con el siguiente orden de precedencia:
+1. **Detección Prioritaria de Flags Conocidos**:
+   - Identifica y extrae primero los flags de modo: `--step`, `--auto` o `--all` (sinónimo de `--auto`).
+   - Si se invoca `/sdd-implement --step` o `/sdd-implement --auto` (sin argumento posicional de tarea), el parser **no interpreta el flag como identificador de tarea**, sino que infiere automáticamente la siguiente tarea pendiente en `tasks.md` y le aplica el modo correspondiente.
+2. **Interpretación de Identificador de Tarea (`Tn`)**:
+   - Tras evaluar o extraer los flags, cualquier argumento posicional que coincida con el patrón de tarea `T[0-9]+` (ej. `T1`, `T2`) se interpreta como la tarea de inicio solicitada.
+   - Si no se especifica ningún identificador `Tn`, se toma por defecto la primera tarea pendiente (`- [ ]`) en `specs/NNN-nombre/tasks.md`.
 
 ### Modos de Ejecución y Menú Interactivo
 1. **Sin Argumentos ni Flags (`/sdd-implement`)**:
    El `@coordinator` detecta la siguiente tarea pendiente en `specs/NNN-nombre/tasks.md` y presenta obligatoriamente un menú interactivo mediante tarjeta de selección (`ask_question` o tarjeta visual):
    - `[A] (Recommended) Modo Paso a Paso (--step)`: Ejecuta la siguiente tarea atómica y pausa tras el commit convencional, solicitando confirmación explícita del usuario antes de avanzar a la próxima.
-   - `[B] Autonomía Continua (--auto)`: Ejecuta secuencialmente todo el lote de tareas pendientes de la spec (`Tn` $\rightarrow$ `Tn+1` $\rightarrow$ ...), actualizando el progreso en tiempo real (`update_focus` y casillas `- [x]` en `tasks.md`), deteniéndose únicamente si surge un fallo de tests, un bloqueo técnico o al completar la última tarea.
+   - `[B] Autonomía Continua (--auto / --all)`: Ejecuta secuencialmente todo el lote de tareas pendientes de la spec (`Tn` $\rightarrow$ `Tn+1` $\rightarrow$ ...), actualizando el progreso en tiempo real (`update_focus` y casillas `- [x]` en `tasks.md`), deteniéndose únicamente si surge un fallo de tests, un bloqueo técnico o al completar la última tarea.
    - `[C] Siguiente Tarea Única`: Ejecuta estrictamente la próxima tarea pendiente y finaliza la sesión sin encadenar ni preguntar por la siguiente.
 2. **Con Flags CLI Explícitos**:
    - `/sdd-implement --step`: Inicia o continúa la ejecución en modo supervisado paso a paso con pausa post-tarea.
-   - `/sdd-implement --auto`: Inicia o continúa en modo de autonomía continua para todo el lote de tareas pendientes.
+   - `/sdd-implement --auto` (o `--all`): Inicia o continúa en modo de autonomía continua para todo el lote de tareas pendientes.
    - `/sdd-implement Tn` (ej. `/sdd-implement T2`): Ejecuta específicamente la tarea solicitada.
    - `/sdd-implement Tn --step` o `/sdd-implement Tn --auto`: Inicia desde la tarea indicada con el modo seleccionado.
 3. **Si todas las tareas están completas (`- [x]`)**:
