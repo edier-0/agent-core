@@ -1,6 +1,7 @@
+<!-- AGENT-CORE-ROOT-README -->
 # agent-core
 
-> **Software Factory Portátil y Arnés de Ingeniería de Software para Agentes de IA**  
+> **Fábrica de Software Agéntica Portátil (*Portable Agentic Software Factory*) y Arnés de Ingeniería de Software para Agentes de IA**  
 > *Desarrollo Guiado por Especificaciones (SDD) · Desarrollo Guiado por Pruebas (TDD) · Flujo de Ramas y PRs Protegidos · DevSecOps Estricto · Subagentes Especializados*
 
 [![GitHub](https://img.shields.io/badge/GitHub-edier--0%2Fagent--core-blue?logo=github)](https://github.com/edier-0/agent-core)
@@ -302,6 +303,17 @@ Para evitar que un solo prompt con superpoderes cometa errores, `agent-core` dis
      - `[MODO: CLARIFICACION_SPEC]`: QA de la spec antes del código. Detecta ambigüedades, contradicciones y casos límite huérfanos.
      - `[MODO: VALIDACION_IMPLEMENTACION]`: QA del código terminado. Audita la implementación RF por RF contra tests automatizados, DevTools y seguridad.
 
+### Visibilidad en Interfaz y Protocolo de Retorno de Subagentes
+Para evitar el colapso de la ventana de contexto y garantizar trazabilidad en tiempo real:
+- **Google Antigravity**: El `@coordinator` emite `update_steps` para pintar y tachar tareas en el *Toggle Overview Panel* y despacha a los subagentes vía `invoke_subagent` (`Workspace: "inherit"`). Cada subagente se materializa con su propia tarjeta visual en el panel lateral.
+- **OpenCode**: El `@coordinator` despacha a los subagentes declarados en `.opencode/agents/` (`@planner`, `@implementer`, `@reviewer`). OpenCode levanta sub-sesiones concurrentes con su respectivo sub-árbol en la TUI/GUI, mostrando en streaming cada paso, llamada a herramienta y comando ejecutado.
+- **Protocolo de Retorno Sintético**: Al finalizar, los subagentes devuelven una tarjeta concisa (Estado, Tests en verde, Commit Hash y Archivos modificados) prohibiendo volcar miles de líneas de terminal al hilo del coordinador.
+
+### Doble Nivel de Enforcement de Permisos: Motor vs Guardarraíles de Contexto
+El arnés define un esquema híbrido de control de acceso para garantizar que ningún agente exceda su alcance:
+- **OpenCode (Enforcement Activo de Motor en Runtime)**: El motor de OpenCode intercepta directamente en tiempo de ejecución las directivas `permissions: [action, resource, effect]` declaradas en el frontmatter YAML de `agents/*.md`. Cualquier intento de invocar herramientas no autorizadas (`edit`, `shell`, `webfetch`) es bloqueado a nivel de sistema por el runtime.
+- **Google Antigravity, Claude Code, OpenAI Codex (Guardarraíles de Contexto)**: En plataformas donde las herramientas no se aíslan por filtros de motor individuales o donde el contexto es compartido, las directivas YAML se complementan con reglas imperativas en el cuerpo del Markdown y en `AGENTS.md`. El `@coordinator` aplica el veto de auto-edición delegando obligatoriamente a subagentes (`invoke_subagent` con neutralización contractual), y los subagentes respetan los límites por instrucción del sistema. Ambos niveles son contractualmente obligatorios.
+
 ---
 
 ## 7. El Framework de los 8 Ejes Técnicos (Entrevista Minuciosa)
@@ -401,10 +413,10 @@ agent-core/
 
 | Agente / Plataforma | Archivos Generados en Adopción | Cómo se Conecta con `agent-core` | Modo de Orquestación |
 | :--- | :--- | :--- | :--- |
-| **OpenCode** | `.opencode/agents/`<br>`.opencode/commands/`<br>`opencode.json` | Copia física de subagentes y comandos desde `.agent/` (sin enlaces simbólicos que fallen en Windows). | **Multiagente nativo**: Despacha subagentes reales (`@planner`, `@implementer`, `@reviewer`) en sesiones aisladas. |
+| **OpenCode** | `.opencode/agents/`<br>`.opencode/commands/`<br>`opencode.json` | Copia física de subagentes y comandos desde `.agent/`. | **Multiagente nativo (Session-Driven)**: Despacha subagentes reales (`@planner`, `@implementer`, `@reviewer`) en sub-sesiones concurrentes con árbol visual y streaming de progreso en la TUI/GUI. |
+| **Google Antigravity** | `AGENTS.md`<br>`.agent/skills/*/SKILL.md` | Registro canónico de skills en `.agent/skills/` con frontmatter para comandos slash. | **Multiagente nativo (Tool-Driven)**: Despacha subagentes reales mediante `invoke_subagent` (`Workspace: "inherit"`), checklist interactivo en Toggle Overview vía `update_steps`, foco superior vía `update_focus` y compuertas interactivas con `ask_question`. |
 | **Claude Code** | `CLAUDE.md`<br>`.claude/commands/sdd-*.md` | Comandos slash nativos autocompletables en la terminal (`/sdd-spec`, `/sdd-implement`, etc.). | **Monohilo coordinado**: El agente anuncia visiblemente en el chat cada transición de rol (`[CAMBIO DE ROL: @agente]`). |
 | **OpenAI Codex** | `CODEX.md` | Convenciones, límites contractuales y comandos exactos de verificación vinculados a `.agent/`. | **Monohilo coordinado**. |
-| **Google Antigravity** | `AGENTS.md`<br>`.agent/skills/` | Registro canónico de skills en `.agent/skills/` y reglas de proyecto. | **Multiagente nativo** mediante `invoke_subagent`. |
 | **Cursor / Windsurf / Aider** | `.cursor/rules/agent-core.mdc`<br>`.windsurfrules` | Reglas de contexto que anclan el ciclo SDD + TDD y guían la ejecución paso a paso. | **Monohilo coordinado**. |
 
 ---

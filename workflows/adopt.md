@@ -20,9 +20,10 @@ Este workflow detecta el entorno de ejecución activo (o la preferencia indicada
        - `skills/` $\rightarrow$ `.agent/skills/`
        - `templates/` $\rightarrow$ `.agent/templates/`
        - `mcp/` $\rightarrow$ `.agent/mcp/`
-   - Si existe `README.md` en la raíz con el contenido de `agent-core`:
-     - Muévelo a `.agent/README.md` (preservando el manual de consulta offline del arnés).
+   - Si existe `README.md` en la raíz y contiene la firma determinista `<!-- AGENT-CORE-ROOT-README -->` o la frase `Fábrica de Software Agéntica Portátil (*Portable Agentic Software Factory*)`:
+     - Se identifica inequívocamente como el manual de `agent-core`: muévelo a `.agent/README.md` (preservando el manual de consulta offline del arnés).
      - Inicializa un `README.md` básico para la aplicación del usuario.
+     - *(Si no contiene dicha firma determinista, se preserva intacto como el README legítimo del proyecto del usuario)*.
    - Si existe `plan.md` en la raíz (plan interno de construcción de `agent-core`):
      - Muévelo a `.agent/docs/history/agent-core-plan.md` para no contaminar la raíz.
 2. **Comprobación de Archivos Fundacionales**:
@@ -49,13 +50,14 @@ El agente detecta su propio entorno de ejecución o consulta al usuario:
 ## Fase 3: Generación de Conectores Nativos por Plataforma
 
 ### 1. Si el entorno es OpenCode:
-- **Configuración de agentes y comandos**:
+- **Configuración de agentes y comandos nativos**:
   - Crea los directorios `.opencode/agents/` y `.opencode/commands/`.
-  - Copia físicamente los subagentes desde `.agent/agents/` hacia `.opencode/agents/` (`coordinator.md`, `planner.md`, `implementer.md`, `reviewer.md`).
-  - Copia físicamente los workflows desde `.agent/workflows/` hacia `.opencode/commands/` (mapeando los comandos slash `/sdd-*`).
+  - Copia físicamente los subagentes desde `.agent/agents/` hacia `.opencode/agents/` (`coordinator.md`, `planner.md`, `implementer.md`, `reviewer.md`), preservando permisos y directivas.
+  - Copia físicamente los workflows desde `.agent/workflows/` hacia `.opencode/commands/` (mapeando los comandos slash `/sdd-*` ejecutables en la TUI).
   - *Regla técnica innegociable*: Emplea exclusivamente **copia física de archivos**, prohibiendo el uso de enlaces simbólicos (*symlinks*) que fallan en Windows sin privilegios elevados.
-- **Configuración de MCPs**:
+- **Configuración de manifiesto `opencode.json`**:
   - Genera `opencode.json` en la raíz a partir de `.agent/templates/adapters/opencode.json.template`.
+  - Declara `"agents": { "directory": ".opencode/agents" }` y `"commands": { "directory": ".opencode/commands" }` para que el motor de OpenCode arme el árbol jerárquico de control y permita visualizar las sub-sesiones en tiempo real.
   - Configura los servidores MCP respetando la regla DevSecOps de variables de entorno (`{env:...}`).
 
 ### 2. Si el entorno es Claude Code:
@@ -78,7 +80,13 @@ El agente detecta su propio entorno de ejecución o consulta al usuario:
   - Si es Aider o genérico: genera `.aider.conf.yml` o referencia a `AGENTS.md`.
 
 ### 5. Si el entorno es Antigravity:
-- Asegura que `AGENTS.md` esté en la raíz con el mapeo canónico de skills en `.agent/skills/` y la directiva de subagentes en `.agent/agents/`.
+- **Registro de Skills para Comandos Slash**:
+  - Organiza y verifica que las skills residan en `.agent/skills/<nombre>/SKILL.md` (o `.agents/skills/<nombre>/SKILL.md`) con encabezados frontmatter válidos (`name: <nombre>`, `description: ...`) para que el chat de Antigravity descubra y autocomplete los comandos slash (`/sdd`, `/sdd-plan`, etc.).
+- **Gobernanza de Interfaz y Subagentes Nativos**:
+  - Asegura que `AGENTS.md` en la raíz contenga las directivas de visibilidad obligatorias:
+    - Invocación de `update_steps` para pintar y actualizar en vivo el *Toggle Overview Panel*.
+    - Invocación de `invoke_subagent` fijando obligatoriamente `Workspace: "inherit"` para materializar los subagentes en el panel lateral (prohibiendo simulación en texto).
+    - Uso de `update_focus` para el foco superior y `ask_question` para las tarjetas interactivas de decisión y compuertas de fase.
 
 ---
 
@@ -86,8 +94,9 @@ El agente detecta su propio entorno de ejecución o consulta al usuario:
 
 El workflow notifica y configura el modo de operación:
 
-1. **Plataformas Multiagente Nativas (OpenCode, Antigravity)**:
-   - El agente principal opera como orquestador nativo despachando y delegando tareas a subagentes reales que corren en sus propios hilos/sesiones aisladas (`@planner`, `@implementer`, `@reviewer`).
+1. **Plataformas Multiagente Nativas**:
+   - **Google Antigravity**: El `@coordinator` opera mediante herramientas nativas (`invoke_subagent` con `Workspace: "inherit"`, `update_steps` para el checklist visual, `update_focus` y `ask_question`). Cada subagente se materializa con su propia tarjeta de ejecución en el panel lateral y devuelve un reporte sintético.
+   - **OpenCode**: El `@coordinator` despacha subagentes declarados en `.opencode/agents/` (`@planner`, `@implementer`, `@reviewer`). OpenCode genera automáticamente un árbol de sub-sesiones en su TUI/GUI, mostrando en streaming el progreso y las llamadas a herramientas.
 2. **Plataformas Monohilo (Claude Code, Cursor, Codex, Windsurf, Aider)**:
    - El agente único opera en su hilo continuo asumiendo internamente el rol de Coordinador.
    - Anuncia cada transición de fase de forma obligatoria y explícita en el chat:

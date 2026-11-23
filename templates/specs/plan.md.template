@@ -32,6 +32,9 @@
   - Cobertura de lógica de negocio pura, cálculo y transformaciones de datos aisladas mediante mocks mínimos.
 - **Pruebas de Integración (`tests/integration/`)**:
   - Verificación de contratos entre endpoints, servicios y base de datos local en `localhost`.
+- **Dependencias de Runtime de Testing (si aplica)**:
+  - Variables de entorno locales (`.env` generado desde `.env.example`).
+  - Servicios de infraestructura local requeridos (ej. Docker Compose para base de datos/colas): `{{TEST_RUNTIME_DEPENDENCIES_OR_NONE}}`.
 - **Pruebas Visuales con Chrome DevTools MCP (si impacta UI)**:
   - Verificación interactiva en `DEV_SERVER_URL` tras levantar el servidor local con `START_DEV_COMMAND`.
   - Inspección de consola de JavaScript (cero errores/warnings no controlados) y verificación de accesibilidad.

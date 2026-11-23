@@ -6,6 +6,9 @@ description: Consulta el estado de la spec activa en la máquina de estados SDD,
 
 Este workflow inspecciona la especificación activa en `specs/`, evalúa su estado actual dentro de la máquina de estados formal de SDD, informa del progreso de tareas y recomienda con exactitud el siguiente comando a ejecutar. También gestiona la cancelación y archivado seguro de specs descartadas.
 
+**Gobernanza de Consola y Roles**:
+Toda consulta o mutación del repositorio mediante comandos de consola Git (`git branch`, `git status`, `git add`, `git commit`, `git checkout`, `git reset`) se delega y ejecuta **exclusivamente a través de `@implementer`**. El `@coordinator` y `@planner` tienen prohibido ejecutar comandos de consola directamente.
+
 ---
 
 ## Modos de Invocación
@@ -17,9 +20,20 @@ Este workflow inspecciona la especificación activa en `specs/`, evalúa su esta
 
 ## PARTE 1: Inspección de Estado
 
-### Fase 1: Detección de Spec Activa
-1. Identifica la spec activa a partir de la rama Git actual (ej. `feature/001-login` -> `specs/001-login/`), o escaneando la última carpeta en `specs/`.
-2. Lee `spec.md`, `plan.md` (si existe) y `tasks.md` (si existe).
+### Fase 1: Detección Determinista de Spec Activa (Árbol de Decisión de 3 Niveles)
+
+El `@coordinator` determina la especificación activa siguiendo un árbol de decisión estricto de 3 niveles:
+
+1. **Nivel 1 (Rama Git Activa)**:
+   - Si la rama actual coincide con el patrón `feature/NNN-slug` (o `fix/NNN-slug`), la spec activa es inequívocamente `specs/NNN-slug/`.
+2. **Nivel 2 (Estado en Metadatos de Specs)**:
+   - Si se opera en `main`, `develop` o una rama genérica, escanea todas las carpetas en `specs/` y revisa el encabezado de cada `spec.md`.
+   - Si existe **exactamente una spec** con `- **Estado**: en_progreso` (o `planificada`), se selecciona automáticamente dicha spec.
+3. **Nivel 3 (Ambigüedad o Ausencia)**:
+   - Si se detectan múltiples specs en progreso o ninguna, no asumir ninguna por defecto.
+   - Presenta al usuario una tarjeta interactiva (`ask_question` o menú estructurado) listando las specs encontradas con su estado actual para que el usuario elija explícitamente sobre cuál desea operar.
+
+*(Para determinar la rama Git actual en plataformas multiagente, el `@coordinator` despacha una consulta de lectura no destructiva a `@implementer` si no cuenta con dicha información en su contexto)*.
 
 ---
 
@@ -64,27 +78,30 @@ Si el usuario decide cancelar o descartar un requerimiento:
      - **Fecha de Cancelación**: AAAA-MM-DD
      - **Motivo**: [descripción o justificación del descarte]
      ```
-2. **Tratamiento según el Modo de Git**:
+2. **Tratamiento según el Modo de Git (Delegado a `@implementer`)**:
 
    #### En modo `branch_pr`:
-   - Realiza un commit local de archivado en la rama temática:
+   - El `@coordinator` despacha a `@implementer` para realizar el commit local de archivado en la rama temática:
      ```bash
      git add specs/NNN-nombre/spec.md
      git commit -m "docs(NNN): archivar spec descartada"
      ```
-   - Devuelve el árbol de trabajo a la rama base:
+   - `@implementer` devuelve el árbol de trabajo a la rama base:
      ```bash
      git checkout <base_branch>
      ```
-   - Solicita confirmación explícita al usuario antes de eliminar o mantener la rama temática en Git:
-     > *"La spec ha sido archivada como descartada. ¿Deseas eliminar la rama local `feature/NNN-slug` (`git branch -d`) o conservarla para historial?"*
+   - El `@coordinator` solicita confirmación explícita al usuario mediante tarjeta de selección interactiva:
+     - `[A] (Recomendada) Renombrar rama a abandoned/NNN-slug para preservar trazabilidad histórica (git branch -m feature/NNN-slug abandoned/NNN-slug)`.
+     - `[B] Eliminar rama local feature/NNN-slug (git branch -D) descartando el código parcial`.
+     - `[C] Conservar rama intacta para reanudar en el futuro`.
+   - Tras la respuesta del usuario, `@coordinator` despacha a `@implementer` para ejecutar la opción elegida.
 
    #### En modo `trunk` (Limpieza Estricta de `main`):
-   - Dado que los commits intermedios de tareas inconclusas residen localmente en `main`, ejecuta un reset al estado base sincronizado previo a la spec:
+   - Dado que los commits intermedios de tareas inconclusas residen localmente en `main`, `@coordinator` despacha a `@implementer` para ejecutar un reset al estado base sincronizado previo a la spec:
      ```bash
      git reset --hard origin/main
      ```
-   - Inmediatamente después, genera un único commit limpio de archivado en `main`:
+   - Inmediatamente después, `@implementer` genera un único commit limpio de archivado en `main`:
      ```bash
      git add specs/NNN-nombre/spec.md
      git commit -m "docs(NNN): archivar spec descartada"

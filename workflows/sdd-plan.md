@@ -28,6 +28,8 @@ Este workflow transforma la especificación funcional clarificada en un plan té
    - Si la feature modifica esquemas relacionales o colecciones, garantiza que los cambios sean no destructivos y reversibles (estrategia expand/contract).
 4. **Estrategia de Testing**:
    - Determina el enfoque de pruebas para cada componente (unitarias, integración, visual con Chrome DevTools).
+   - **Aislamiento de Pruebas Unitarias In-Memory**: Las pruebas unitarias del ciclo TDD deben utilizar mocks, fakes o stubs in-memory sin dependencias de red externa, sockets remotos ni demonios de fondo.
+   - **Dependencias de Runtime de Testing**: Si se requieren servicios locales para tests de integración (ej. PostgreSQL o Redis en Docker Compose), el plan debe incluir obligatoriamente la sección `Dependencias de Runtime de Testing`, verificando su disponibilidad activa (`docker compose ps`) antes de ejecutar las pruebas de integración.
    - **Proyectos sin Suite Preexistente**: Si el proyecto carece de runner de pruebas, el plan formula obligatoriamente como primera tarea: `T1: Configurar runner de pruebas básico (ej. vitest, pytest, jest)`. Si el usuario declina instalar un runner, planifica scripts temporales en `.agent/scratch/`.
 
 ---

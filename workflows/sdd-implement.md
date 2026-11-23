@@ -25,7 +25,11 @@ Este workflow ejecuta una tarea individual de `specs/NNN-nombre/tasks.md`. Es ej
    - Ejecuta `git status --porcelain`.
    - Si detecta cambios no commiteados residuales de una sesión previa:
      - Consulta al usuario: *"Se detectaron cambios residuales no commiteados en el árbol de trabajo. ¿Deseas (1) reanudar el trabajo sobre estos archivos existentes, o (2) descartarlos (`git checkout . && git clean -fd`) para reiniciar la tarea desde el último commit limpio?"*
-2. **Comprobación de Línea Base (*Baseline Check*)**:
+2. **Preparación de Variables de Entorno Locales (`.env`)**:
+   - Antes de ejecutar el primer test o baseline, verifica si existe `.env.example` y falta `.env` en la raíz.
+   - Si falta `.env`: copia `.env.example` a `.env` configurando valores seguros de mock para desarrollo y testing local (ej. `DB_HOST=localhost`, `JWT_SECRET=mock-secret-local`).
+   - Documenta la creación del `.env` local en el reporte de la tarea y asegura que `.env` esté ignorado en `.gitignore`.
+3. **Comprobación de Línea Base (*Baseline Check*)**:
    - Antes de escribir o modificar código, corre `TEST_COMMAND` (o la suite acotada al módulo en monorrepositorios).
    - **Regla Innegociable**: Si los tests ya están fallando antes de iniciar la tarea (*failing baseline*), el subagente **DEBE DETENERSE DE INMEDIATO**. Está terminantemente prohibido construir código sobre una base rota.
    - *Exención Greenfield*: Si el proyecto carece de tests y la tarea activa es `T1: Configurar runner de pruebas`, la comprobación previa de línea base se exime de forma natural; al terminar T1, se valida la prueba de sanidad mínima.
@@ -89,7 +93,7 @@ Antes de commitear, se validan obligatoriamente tres condiciones:
 
 1. Marca la tarea como completada en `specs/NNN-nombre/tasks.md`:
    - Cambia `- [ ] Tn: ...` a `- [x] Tn: ...` y remueve la sub-viñeta de checkpoint.
-2. Si es la primera tarea, asegura que `spec.md` tenga `Estado: en_progreso`.
-3. Reporta el avance y sugiere el siguiente paso:
+   - *Nota de Permisos*: `@implementer` **nunca edita `spec.md`** (su permiso de edición sobre `specs/**/spec.md` está estrictamente denegado). La gestión del ciclo de vida y los metadatos de `spec.md` corresponden de forma exclusiva a `@planner`.
+2. Reporta el avance y sugiere el siguiente paso:
    - Si quedan tareas pendientes: sugiere ejecutar la siguiente tarea con `/sdd-implement`.
    - Si se completó la última tarea: sugiere pasar a la validación integral con `/sdd-validate`.

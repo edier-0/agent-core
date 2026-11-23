@@ -4,7 +4,7 @@ description: Inicializa agent-core en un repositorio (Día 0 o existente), despl
 
 # Workflow: Inicialización del Repositorio (Bootstrap y Reorganización Quirúrgica)
 
-Este workflow configura los cimientos de gobernanza y arnés técnico de `agent-core` en el repositorio destino. Es ejecutado directamente por el **agente principal / root** (no por subagentes aislados).
+Este workflow configura los cimientos de gobernanza y arnés técnico de `agent-core` en el repositorio destino. Es liderado por el `@coordinator` para la entrevista técnica, detección de contexto y toma de decisiones con el usuario, y delega la ejecución física del scaffolding, reorganización de carpetas y escritura de archivos fundacionales a `@implementer` (preservando el veto absoluto de auto-edición del coordinador).
 
 Opera bajo la política **Local-First (Offline)** y el principio de **Cero Basura en la Raíz**: todo el arnés de agentes reside estrictamente dentro de `.agent/`, dejando la raíz del proyecto 100% limpia para el código de la aplicación del usuario.
 
@@ -24,7 +24,7 @@ Opera bajo la política **Local-First (Offline)** y el principio de **Cero Basur
 
 ### Fase 1: Detección de Despliegue y Reorganización Quirúrgica
 
-Antes de cualquier entrevista o generación de archivos, el agente analiza la estructura del directorio actual:
+Antes de cualquier entrevista o generación de archivos, el `@coordinator` analiza la estructura del directorio actual y despacha a `@implementer` para ejecutar la reorganización física requerida:
 
 #### Escenario 1: Clonado Directo de `agent-core` (Árbol Expuesto en la Raíz)
 Si el repositorio actual contiene carpetas como `agents/`, `workflows/`, `skills/`, `templates/` o `mcp/` expuestas directamente en la raíz:
@@ -238,9 +238,9 @@ Consulta `AGENTS.md` para conocer los comandos de desarrollo, pruebas y ejecuci�
 ### Fase 7: Confirmación y Activación del Adaptador
 
 Tras la confirmación explícita del usuario:
-1. Escribe los archivos fundacionales validados (`AGENTS.md`, `docs/constitution.md`, `MEMORY.md`, `.env.example`, `README.md`).
-2. Crea el directorio transitorio `.agent/scratch/` y añade la regla correspondiente a `.gitignore`.
-3. Normaliza todas las rutas a barras directas (`/`).
+1. El `@coordinator` despacha a `@implementer` para escribir los archivos fundacionales validados (`AGENTS.md`, `docs/constitution.md`, `MEMORY.md`, `.env.example`, `README.md`).
+2. `@implementer` crea el directorio transitorio `.agent/scratch/` y añade la regla correspondiente a `.gitignore`.
+3. `@implementer` normaliza todas las rutas a barras directas (`/`).
 4. Invoca automáticamente el workflow `/adopt` para configurar los conectores del agente activo en el entorno.
 
 ---

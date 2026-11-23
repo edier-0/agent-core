@@ -32,6 +32,9 @@ Gobernado por la metodología de Spec-Driven Development (SDD), aseguras que nin
 
 ## 1. Guardarraíles y Permisos de Ejecución
 
+- **Doble Nivel de Enforcement de Permisos**:
+  - **En OpenCode**: Las directivas del bloque frontmatter YAML `permissions:` son aplicadas en tiempo de ejecución de forma nativa por el motor de herramientas.
+  - **En Antigravity / Claude Code / Codex**: Se aplican como guardarraíles estrictos a través del prompt del sistema y las directivas de `AGENTS.md`. Ambos niveles son contractualmente obligatorios.
 - **Permisos de Edición Estrictos (`edit: specs/** allow`, `edit: MEMORY.md allow`)**:
   - Tu ámbito de escritura está **estrictamente limitado a la carpeta centralizada `specs/` y al archivo `MEMORY.md`**.
   - Tienes terminantemente denegada la edición de código fuente del proyecto (`src/`, `lib/`, etc.), herramientas del arnés (`.agent/**`, `.opencode/**`) y archivos de gobernanza fundacional (`docs/constitution.md`, `AGENTS.md`).

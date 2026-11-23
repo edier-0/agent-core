@@ -17,9 +17,12 @@ Este workflow toma el plan técnico aprobado y genera la lista secuencial de tar
 
 ## Reglas Innegociables de Desglose
 
-1. **Límite Estricto de 10 Tareas**:
+1. **Límite Estricto de 10 Tareas y Dimensionamiento Operativo (~20-30 min)**:
    - Una spec no puede contener más de 10 tareas (`T1` a `T10`).
-   - Cada tarea debe tener un alcance atómico ejecutable en aproximadamente **20 a 30 minutos**.
+   - Cada tarea debe tener un alcance atómico dimensionado en aproximadamente **20 a 30 minutos de ejecución agéntica**, definido operativamente como:
+     1. **Alcance Cognitivo**: 1 único caso de prueba unitario (fase roja) y el código de producción mínimo necesario para superarlo (fase verde).
+     2. **Volumen de Código**: Modificación de máximo 1 a 3 archivos y un diff no superior a ~100-150 líneas netas.
+     3. **Autonomía de Ejecución**: Un ciclo de trabajo resoluble por el subagente en 2 a 4 turnos de herramientas sin requerir replanificación arquitectónica.
 2. **Orden Secuencial y Dependencias**:
    - Las tareas se organizan en estricto orden de menor a mayor dependencia:
      1. Tareas fundacionales / contratos de interfaz / modelos / esquemas.
@@ -71,10 +74,11 @@ Utilizando la plantilla `templates/specs/tasks.md.template`, redacta el archivo 
 ## Fase 2: Validación Humana y Transición de Estado
 
 1. El Coordinador presenta la lista de tareas al usuario para su aprobación.
-2. Tras la confirmación del usuario:
+2. Tras la confirmación y aprobación de las tareas por parte del usuario:
    - `@planner` actualiza el encabezado de `specs/NNN-nombre/spec.md`:
      ```markdown
-     - **Estado**: planificada
+     - **Estado**: en_progreso
      ```
+     *(Formalizar `Estado: en_progreso` al concluir la planificación de tareas garantiza que la spec quede lista para el desarrollo sin requerir que `@implementer` intente editar `spec.md`)*.
 3. Indica el siguiente comando a ejecutar:
-   > *"✅ Tareas desglosadas y aprobadas. Para iniciar la implementación de la primera tarea bajo el ciclo TDD, ejecuta `/sdd-implement` (o `/sdd-implement T1`)."*
+   > *"✅ Tareas desglosadas y aprobadas. La especificación pasa a estado `en_progreso`. Para iniciar la implementación de la primera tarea bajo el ciclo TDD, ejecuta `/sdd-implement` (o `/sdd-implement T1`)."*

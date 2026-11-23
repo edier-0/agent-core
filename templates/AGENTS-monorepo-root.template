@@ -34,6 +34,25 @@ TEST_COMMAND="{{TEST_COMMAND}}"            # Suite global de integración (ejecu
 - `AGENT_CAN_MERGE`: {{AGENT_CAN_MERGE}}
 - **Centralización de Specs**: Todas las especificaciones residen exclusivamente en la carpeta raíz `specs/NNN-nombre/`, prohibiendo carpetas de specs dispersas en submódulos.
 
+## Orquestación Multiagente y Visibilidad en UI
+- **Veto de Auto-Edición y Consola para el Coordinador**:
+  - En plataformas multiagente, el `@coordinator` tiene estrictamente prohibido usar `edit_file`, `write_file` o ejecutar comandos en consola directamente. Toda creación/edición de código y comandos Git se delega a `@implementer`.
+- **Delegación Exclusiva de Consola Git a `@implementer`**:
+  - Todo comando de consola de Git es ejecutado **estricta y exclusivamente por `@implementer`**.
+  - Rige una regla de **exclusión mutua** para prevenir excepciones de `.git/index.lock` en Windows: el coordinador no invoca Git mientras `@implementer` esté activo.
+- **En Google Antigravity**:
+  - **Granularidad de `update_steps` (Límite de 12 Pasos)**: Mapea exclusivamente las 7-8 Fases Canónicas del Flujo SDD en el *Toggle Overview Panel*. El progreso fino de tareas individuales se comunica vía `update_focus` y `specs/NNN-nombre/tasks.md`.
+  - Es obligatorio despachar subagentes mediante `invoke_subagent` fijando `Workspace: "inherit"`. Prohibido simular roles en texto.
+  - Al despachar con `TypeName: "self"`, neutralizar el veto de auto-edición en el prompt contractual.
+  - Formular decisiones y compuertas mediante tarjetas interactivas `ask_question`.
+- **En OpenCode**:
+  - Es obligatorio despachar subagentes desde `.opencode/agents/` (`@planner`, `@implementer`, `@reviewer`) para alimentar el árbol visual de sub-sesiones en la TUI.
+  - Comandos slash nativos en `.opencode/commands/`.
+- **En Entornos Monohilo (Claude Code, Cursor, Codex, Windsurf, Aider)**:
+  - Anunciar visiblemente cada transición de rol en el chat: `[CAMBIO DE ROL: @agente]`.
+- **Compuertas de Pausa Obligatorias**:
+  - Pausa obligatoria al finalizar cada fase mayor (Spec, Plan, Tareas, Validación y previo a PR).
+
 ## Límites
 - **Siempre**: Respetar workspaces (`PKG_ADD_COMMAND`); ejecutar `BUILD_COMMAND` en paquetes compartidos antes de probar consumidores; TDD en cada tarea.
 - **Pregunta antes**: Crear nuevos paquetes en el monorrepo; modificar dependencias compartidas; abrir PR; borrar ramas.
